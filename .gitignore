@@ -1,0 +1,8 @@
+# Private — your real Slack digest data
+data.js
+dismissed.json
+regenerate.log
+regenerate-prompt.md
+
+# macOS
+.DS_Store

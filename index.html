@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slack Digest</title>
+<style>
+
+/* ─── Yahoo OS Dark tokens ────────────────────────────── */
+:root {
+  --brand:            #7D2EFF;
+  --accent:           #F8FB4C;
+  /* foreground */
+  --fg-primary:       #f5f5f5;
+  --fg-secondary:     #b0b0b0;
+  --fg-tertiary:      #5b636a;
+  --fg-muted:         rgba(248,248,248,.55);
+  --fg-on-color:      #1d1d1f;
+  --fg-brand:         #b58cff;
+  --fg-brand-sec:     #d1c9fb;
+  --fg-alert:         #ff4d52;
+  --fg-alert-sec:     #ff9ba1;
+  --fg-positive:      #179553;
+  --fg-positive-sec:  #1ac567;
+  --bg-positive:      #56c470;
+  --fg-warning:       #c28800;
+  --fg-warning-sec:   #ffa166;
+  --fg-info:          #1194ec;
+  /* background */
+  --bg-primary:       #2c2c2c;
+  --bg-secondary:     #121212;
+  --bg-accent:        #1A1919;
+  --bg-brand:         #b58cff;
+  --bg-brand-sec:     #261c4c;
+  --bg-alert-sec:     #660100;
+  --bg-warning-sec:   #431700;
+  --bg-positive-sec:  #083724;
+  --bg-info-sec:      #001d66;
+  --bg-e0:            #3a3a3a;
+  /* lines */
+  --line-tertiary:    rgba(248,248,248,.16);
+  --line-muted:       rgba(248,248,248,.08);
+  --line-brand:       #b58cff;
+  --r-xs: 2px; --r-sm: 4px; --r-md: 8px;
+  --r-lg: 16px; --r-xl: 32px; --r-full: 9999px;
+  --sp-xs:4px; --sp-sm:8px; --sp-md:16px;
+  --sp-lg:24px; --sp-xl:32px; --sp-xxl:48px;
+  --ease-core:   cubic-bezier(0.6, 0, 0.2, 1);
+  --ease-decel:  cubic-bezier(0.3, 0.4, 0.2, 1);
+  --ease-bounce: linear(0,0.009 0.9%,0.146 4%,0.757 11.5%,1.035 16.5%,1.178 23.9%,1.015 38%,0.986 41.5%,0.997 50.2%,1);
+  --dur-75:75ms; --dur-100:100ms; --dur-150:150ms; --dur-250:250ms; --dur-400:400ms;
+  --e1: 0px 1px 2px rgba(26,25,25,.06),0px 2px 4px -1px rgba(26,25,25,.05),0px 4px 6px -2px rgba(26,25,25,.04),0px 4px 6px -4px rgba(26,25,25,.03);
+  --e2: 0px 2px 4px -1px rgba(26,25,25,.06),0px 4px 8px -2px rgba(26,25,25,.05),0px 6px 10px -4px rgba(26,25,25,.04),0px 8px 12px -6px rgba(26,25,25,.05);
+  --e3: 0px 4px 8px -4px rgba(26,25,25,.05),0px 8px 14px -6px rgba(26,25,25,.04),0px 12px 20px -8px rgba(26,25,25,.05),0px 16px 24px -10px rgba(26,25,25,.08);
+  --e4: 0px 6px 12px -8px rgba(26,25,25,.04),0px 12px 22px -10px rgba(26,25,25,.04),0px 18px 32px -12px rgba(26,25,25,.05),0px 28px 40px -16px rgba(26,25,25,.12);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  font-family: 'YA Sans VF', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, #2A1060 0%, #0F0F0F 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--sp-xl) var(--sp-md) var(--sp-xxl);
+}
+
+/* ─── Widget shell ─────────────────────────────────────── */
+.widget {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 12px;
+  background: var(--bg-primary);
+  box-shadow: var(--e4), 0 0 0 1px rgba(248,248,248,.08);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── Header ───────────────────────────────────────────── */
+.header {
+  background: #1a1919;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 260px;
+}
+
+/* Illustration — absolute behind header content */
+.header-illus {
+  position: absolute;
+  left: 13.77%;
+  top: 6.37%;
+  width: 72.67%;
+  height: 78.82%;
+  object-fit: contain;
+  object-position: center top;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.header-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Y! logo */
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: var(--accent);
+  border-radius: var(--r-full);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--fg-primary);
+  letter-spacing: -1px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(248,251,76,.25);
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: normal;
+  color: #ffffff;
+  letter-spacing: 0;
+}
+
+.header-sub {
+  font-family: ui-monospace, 'SF Mono', 'Menlo', monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0;
+  color: rgba(255,255,255,.5);
+}
+
+/* Add button — icon-only circle */
+.add-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  background: #1a1919;
+  border: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background var(--dur-150) var(--ease-core),
+    border-color var(--dur-150) var(--ease-core),
+    transform var(--dur-100) var(--ease-core);
+}
+
+.add-btn:hover {
+  background: rgba(125,46,255,.15);
+  border-color: rgba(181,140,255,.35);
+}
+
+.add-btn:active { transform: scale(.92); }
+
+/* ─── Tabs — inside header ─────────────────────────────── */
+.tabs-track {
+  display: flex;
+  align-items: center;
+  background: rgba(243,242,239,.1);
+  border-radius: var(--r-full);
+  padding: 4px;
+  gap: 2px;
+  position: relative;
+  z-index: 2;
+  align-self: flex-start;
+}
+
+/* active — contrast-high: #e3e3e3 pill, palette/foreground/primary text */
+.tab-btn.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: var(--r-full);
+  border: 1px solid #e3e3e3;
+  background: #e3e3e3;
+  color: #141414;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 15.4px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  max-width: 200px;
+  overflow: hidden;
+  transition:
+    max-width var(--dur-250) var(--ease-decel),
+    background var(--dur-150) var(--ease-core),
+    color var(--dur-150) var(--ease-core);
+}
+
+/* inactive — tertiary: transparent bg, #f5f5f5 text; collapsed in rest */
+.tab-btn:not(.active) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: var(--r-full);
+  border: 1px solid transparent;
+  background: none;
+  color: #f5f5f5;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 15.4px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    max-width var(--dur-250) var(--ease-decel),
+    padding-left var(--dur-250) var(--ease-decel),
+    padding-right var(--dur-250) var(--ease-decel),
+    opacity var(--dur-200) var(--ease-core);
+}
+
+/* hover → expanded: reveal inactive tabs */
+.tabs-track:hover .tab-btn:not(.active) {
+  max-width: 140px;
+  padding-left: 12px;
+  padding-right: 12px;
+  opacity: 1;
+  pointer-events: auto;
+}
+.tabs-track:hover .tab-btn:not(.active):hover { opacity: .6; }
+
+/* chevron — rest indicator, fades + collapses on hover */
+.tabs-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-150) var(--ease-core),
+    width var(--dur-300) var(--ease-decel);
+}
+.tabs-track:hover .tabs-chevron {
+  opacity: 0;
+  width: 0;
+}
+
+/* ─── Content panes ────────────────────────────────────── */
+.pane-area { background: var(--bg-primary); }
+
+.pane {
+  display: none;
+  flex-direction: column;
+  padding: 32px;
+  gap: 12px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.pane.active { display: flex; }
+
+.pane::-webkit-scrollbar { width: 4px; }
+.pane::-webkit-scrollbar-track { background: transparent; }
+.pane::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: var(--r-full); }
+
+/* ─── Section labels ───────────────────────────────────── */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.28);
+  padding-top: 16px;
+  flex-shrink: 0;
+}
+
+.section-label:first-child { padding-top: 0; }
+
+/* ─── Action cards ─────────────────────────────────────── */
+.card {
+  background: var(--bg-e0);
+  border-radius: 12px;
+  padding: 13px 19px;
+  display: block;
+  text-decoration: none;
+  flex-shrink: 0;
+  border: 1px solid rgba(248,248,248,.06);
+  transition:
+    box-shadow var(--dur-150) var(--ease-core),
+    transform var(--dur-100) var(--ease-core),
+    border-color var(--dur-150) var(--ease-core);
+}
+
+.card[data-context]:not(.card-waiting):hover {
+  box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  border-color: rgba(248,248,248,.12);
+  transform: translateY(-2px);
+}
+
+/* Header wraps subject + about with 6px gap (both rest & expanded) */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-subject {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #f5f8fa;
+  letter-spacing: 0;
+}
+
+.card-about {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: #b0b0b0;
+  overflow: hidden;
+}
+
+.ca-who { font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+.ca-dot { opacity: .4; flex-shrink: 0; }
+/* rest: meta grows to push effort tag right; expanded: inline */
+.ca-meta { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card.expanded .ca-meta { flex: none; }
+/* extra · dot shown only in expanded state before the tag */
+.ca-dot-extra { display: none; opacity: .4; flex-shrink: 0; }
+.card.expanded .ca-dot-extra { display: block; }
+.ca-effort {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+/* rest: right-aligned via margin-left auto; expanded: inline */
+.card:not(.expanded) .ca-effort { margin-left: auto; }
+
+/* Effort label colors — exact spectrum tokens from Figma node 255:312 */
+.effort-reply    { color: #a2daff; }  /* spectrum/blue/3   */
+.effort-design   { color: #ffb0e7; }  /* spectrum/pink/3   */
+.effort-review   { color: var(--fg-warning-sec); }
+.effort-decision { color: var(--fg-positive-sec); }
+.effort-followup { color: #a2f2a2; }  /* spectrum/green/3  */
+
+/* Waiting card — dim ghost on dark */
+.card-waiting {
+  background: rgba(248,248,248,.04);
+  border-color: rgba(248,248,248,.04);
+  cursor: default;
+}
+.card-waiting .card-subject { color: rgba(248,248,248,.35); }
+.card-waiting .card-about   { color: rgba(248,248,248,.22); }
+.card-waiting .ca-who       { color: rgba(248,248,248,.28); }
+
+/* ─── Skeleton loading ─────────────────────────────────── */
+.skeleton { display: none; }
+.skeleton.visible { display: flex; flex-direction: column; gap: 8px; }
+
+.skel-card {
+  background: rgba(248,248,248,.06);
+  border-radius: var(--r-lg);
+  padding: 16px 24px;
+  flex-shrink: 0;
+  border: 1px solid rgba(248,248,248,.05);
+}
+
+.skel-line {
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.07) 25%,
+    rgba(255,255,255,.14) 50%,
+    rgba(255,255,255,.07) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skel-line + .skel-line { margin-top: 8px; }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* Pane content wrapper */
+.pane-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Card expand / dismiss ────────────────────────────── */
+.card { cursor: pointer; }
+
+.card-expand {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-top: 0;
+  transition:
+    max-height var(--dur-400) var(--ease-decel),
+    opacity var(--dur-250) var(--ease-core),
+    margin-top var(--dur-250) var(--ease-decel);
+}
+
+.card.expanded .card-expand {
+  max-height: 220px;
+  opacity: 1;
+  margin-top: 12px;
+}
+
+/* body text — body1: 14/20 Regular, spectrum/gray/3 */
+.card-context {
+  font-size: 14px;
+  line-height: 20px;
+  color: #e0e4e9;
+  padding-bottom: 12px;
+}
+
+/* actions row — 0.5px divider, palette/line/secondary */
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 0.5px solid #5b636a;
+  gap: 8px;
+}
+
+/* tertiary button — spectrum/purple/4, no bg, no border */
+.card-open-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 15.4px;
+  color: #cac2ff;
+  text-decoration: none;
+  letter-spacing: 0;
+  flex-shrink: 0;
+  transition: opacity var(--dur-100) var(--ease-core);
+}
+.card-open-link:hover { opacity: .65; }
+
+/* primary button — spectrum/green/4 bg, palette/foreground/primary text */
+.card-done-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #7ee487;
+  color: #141414;
+  border: 1px solid #444444;
+  border-radius: var(--r-full);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 15.4px;
+  font-family: inherit;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition:
+    background var(--dur-100) var(--ease-core),
+    transform var(--dur-100) var(--ease-core);
+}
+.card-done-btn:hover { background: #6fd477; }
+.card-done-btn:active { transform: scale(.97); }
+
+/* ─── Growth newspaper layout ───────────────────────────── */
+.news-section { display: flex; flex-direction: column; gap: 0; }
+.news-section + .news-section { margin-top: 24px; }
+
+.news-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.news-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,.15);
+}
+
+.news-rule-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.news-feature {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.news-feature:last-child { border-bottom: none; }
+
+.news-headline {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #f7f6f6;
+  letter-spacing: -.1px;
+}
+
+.news-feature-body {
+  font-size: 12px;
+  line-height: 17px;
+  color: rgba(255,255,255,.45);
+  margin-top: 5px;
+}
+
+.news-list { display: flex; flex-direction: column; }
+
+.news-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.news-item:last-child { border-bottom: none; }
+
+.news-num {
+  font-family: ui-monospace, 'SF Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255,255,255,.22);
+  min-width: 18px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.news-item-content { flex: 1; min-width: 0; }
+
+.news-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #f7f6f6;
+}
+
+.news-item-body {
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255,255,255,.4);
+  margin-top: 3px;
+}
+
+/* ─── Source Pulse ─────────────────────────────────────── */
+.pulse-area {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--line-muted);
+  padding: 14px 32px 18px;
+}
+
+.pulse-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.22);
+  margin-bottom: 10px;
+}
+
+.pulse-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pulse-item {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.pulse-source {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,.35);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 100px;
+}
+
+.pulse-summary {
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255,255,255,.48);
+}
+
+/* ─── Resize handle ────────────────────────────────────── */
+.resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 20;
+  border-radius: 0 12px 12px 0;
+}
+
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 40px;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,0);
+  transition: background var(--dur-250) var(--ease-core);
+}
+
+.resize-handle:hover::after  { background: rgba(255,255,255,.22); }
+.resize-handle:active::after { background: rgba(255,255,255,.4); }
+
+/* ─── Board mode (wide widget) ──────────────────────────── */
+.pane-col-header {
+  display: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(248,248,248,.3);
+  padding: 14px 20px 10px;
+  border-bottom: 1px solid var(--line-muted);
+  background: var(--bg-primary);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.widget.board-mode .tabs-track    { display: none; }
+.widget.board-mode .header        { height: auto; padding-bottom: 24px; }
+
+.widget.board-mode .pane-area {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+}
+
+.widget.board-mode .pane {
+  display: flex !important;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,.08);
+  max-height: 620px;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.widget.board-mode #pane-growth  { border-right: none; }
+
+.widget.board-mode .pane-content,
+.widget.board-mode .skeleton     { padding: 14px 20px; }
+
+.widget.board-mode #pane-growth  { padding: 0; }
+.widget.board-mode .news-section { padding: 14px 20px 0; }
+.widget.board-mode .news-section + .news-section { margin-top: 8px; }
+
+.widget.board-mode .pane-col-header { display: block; }
+
+/* ─── Add Item Modal ───────────────────────────────────── */
+.add-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-250) var(--ease-core);
+  padding: var(--sp-md);
+}
+
+.add-modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.add-modal {
+  background: #1e1e1e;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--e4), 0 0 0 1px rgba(248,248,248,.05);
+  transform: scale(.94) translateY(12px);
+  transition:
+    transform var(--dur-250) var(--ease-decel),
+    opacity var(--dur-250) var(--ease-core);
+  overflow: hidden;
+}
+
+.add-modal-overlay.open .add-modal {
+  transform: scale(1) translateY(0);
+}
+
+.add-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.add-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.1px;
+}
+
+.add-modal-close {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,.08);
+  border: none;
+  color: rgba(255,255,255,.5);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: inherit;
+  transition: background var(--dur-150) var(--ease-core);
+}
+.add-modal-close:hover { background: rgba(255,255,255,.14); color: #fff; }
+
+.add-mode-toggle {
+  display: flex;
+  gap: 6px;
+  padding: 16px 24px 8px;
+}
+
+.add-mode-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,.1);
+  background: none;
+  color: rgba(255,255,255,.4);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background var(--dur-150) var(--ease-core),
+    color var(--dur-150) var(--ease-core),
+    border-color var(--dur-150) var(--ease-core);
+}
+
+.add-mode-btn.active {
+  background: rgba(125,46,255,.25);
+  border-color: rgba(181,140,255,.4);
+  color: #c9a8ff;
+  font-weight: 600;
+}
+
+.add-form {
+  padding: 8px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.add-field { display: flex; flex-direction: column; gap: 6px; }
+.add-field.hidden { display: none; }
+
+.add-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+
+.add-input {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  color: #f5f5f5;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 20px;
+  outline: none;
+  transition:
+    border-color var(--dur-150) var(--ease-core),
+    background var(--dur-150) var(--ease-core);
+}
+.add-input:focus {
+  border-color: rgba(181,140,255,.5);
+  background: rgba(255,255,255,.09);
+}
+.add-input::placeholder { color: rgba(255,255,255,.2); }
+
+.add-textarea {
+  resize: vertical;
+  min-height: 72px;
+  max-height: 160px;
+}
+
+.add-tab-picker { display: flex; gap: 8px; }
+
+.add-tab-pick {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255,255,255,.1);
+  background: none;
+  color: rgba(255,255,255,.4);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background var(--dur-150) var(--ease-core),
+    color var(--dur-150) var(--ease-core),
+    border-color var(--dur-150) var(--ease-core);
+}
+
+.add-tab-pick.active {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.22);
+  color: #fff;
+  font-weight: 600;
+}
+
+.add-submit-btn {
+  margin-top: 4px;
+  padding: 13px 0;
+  border-radius: var(--r-full);
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: -.1px;
+  cursor: pointer;
+  transition:
+    background var(--dur-150) var(--ease-core),
+    transform var(--dur-100) var(--ease-core);
+}
+.add-submit-btn:hover { background: #9040ff; }
+.add-submit-btn:active { transform: scale(.98); }
+
+/* ─── Toast ────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: var(--sp-lg);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--bg-e0);
+  color: var(--fg-primary);
+  border: 1px solid rgba(248,248,248,.1);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .1px;
+  padding: 10px var(--sp-md);
+  border-radius: var(--r-lg);
+  box-shadow: var(--e3), 0 0 0 1px rgba(248,248,248,.06);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  white-space: nowrap;
+  transition:
+    opacity var(--dur-250) var(--ease-core),
+    transform var(--dur-250) var(--ease-decel);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <!-- ── Header with tabs inside ── -->
+  <div class="header">
+
+    <img class="header-illus"
+         src="https://www.figma.com/api/mcp/asset/f18b118c-d439-401e-b775-6d4df3df324a"
+         alt=""
+         onerror="this.style.display='none'">
+
+    <div class="header-top">
+      <div class="header-identity">
+        <div class="logo">Y!</div>
+        <div class="header-text">
+          <div class="header-title">Slack Digest</div>
+          <div class="header-sub" id="headerTs">Ruta Roberts · Tue, Jun 17</div>
+        </div>
+      </div>
+
+      <button class="add-btn" id="addBtn" onclick="openAddModal()" aria-label="Add item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v12M2 8h12" stroke="rgba(255,255,255,.8)" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-track">
+      <button class="tab-btn active" id="tab-today" onclick="switchTab('today')">Today</button>
+      <button class="tab-btn" id="tab-community" onclick="switchTab('community')">Community</button>
+      <button class="tab-btn" id="tab-growth" onclick="switchTab('growth')">Growth</button>
+      <div class="tabs-chevron" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4.5 2L7.5 6L4.5 10" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Panes ── -->
+  <div class="pane-area">
+
+    <!-- TODAY -->
+    <div class="pane active" id="pane-today">
+
+      <div class="pane-col-header">Today</div>
+      <div class="skeleton" id="skel-today">
+        <div class="skel-card"><div class="skel-line" style="height:14px;width:58%"></div><div class="skel-line" style="height:12px;width:38%"></div></div>
+        <div class="skel-card"><div class="skel-line" style="height:14px;width:65%"></div><div class="skel-line" style="height:12px;width:42%"></div></div>
+        <div class="skel-card"><div class="skel-line" style="height:14px;width:50%"></div><div class="skel-line" style="height:12px;width:32%"></div></div>
+      </div>
+
+      <div class="pane-content" id="content-today">
+        <!-- populated by initData() from data.js -->
+      </div>
+
+    </div><!-- /pane-today -->
+
+
+    <!-- COMMUNITY -->
+    <div class="pane" id="pane-community">
+
+      <div class="pane-col-header">Community</div>
+      <div class="skeleton" id="skel-community">
+        <div class="skel-card"><div class="skel-line" style="height:13px;width:55%"></div><div class="skel-line" style="height:11px;width:38%"></div></div>
+        <div class="skel-card"><div class="skel-line" style="height:13px;width:65%"></div><div class="skel-line" style="height:11px;width:44%"></div></div>
+        <div class="skel-card"><div class="skel-line" style="height:13px;width:48%"></div><div class="skel-line" style="height:11px;width:30%"></div></div>
+      </div>
+
+      <div class="pane-content" id="content-community">
+        <!-- populated by initData() from data.js -->
+      </div>
+
+    </div><!-- /pane-community -->
+
+
+    <!-- GROWTH -->
+    <div class="pane" id="pane-growth">
+
+      <div class="pane-col-header">Growth</div>
+      <div class="news-section">
+        <div class="news-rule">
+          <span class="news-rule-label">Fix these first</span>
+        </div>
+
+        <div class="news-feature">
+          <div class="news-headline">Pre-authenticate MCPs before every session</div>
+          <div class="news-feature-body">Run /mcp at the start of every session, not mid-task when something breaks. Treat it like connecting to VPN.</div>
+        </div>
+
+        <div class="news-feature">
+          <div class="news-headline">Give constraints upfront, not after</div>
+          <div class="news-feature-body">Before any code or PR task, tell Claude what you've tried, which conventions apply, and what "done" looks like.</div>
+        </div>
+      </div>
+
+      <div class="news-section">
+        <div class="news-rule">
+          <span class="news-rule-label">All tips · Jun 2026</span>
+        </div>
+
+        <div class="news-list">
+          <div class="news-item">
+            <span class="news-num">01</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Reset sessions when stuck</div>
+              <div class="news-item-body">Fresh session with just the error and what you tried. Long failed sessions degrade quality.</div>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <span class="news-num">02</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Give constraints upfront, not after</div>
+              <div class="news-item-body">Before any code or PR task — what you tried, conventions, what "done" looks like.</div>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <span class="news-num">03</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Pre-authenticate MCPs before every session</div>
+              <div class="news-item-body">Treat it like connecting to VPN — not mid-task when something fails.</div>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <span class="news-num">04</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Ask Claude to verify before acting on audits</div>
+              <div class="news-item-body">After any analysis, ask "which of these are actually used in the app?" One grep saves a full PR cycle.</div>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <span class="news-num">05</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Approve diffs before committing</div>
+              <div class="news-item-body">Say "show me the diff before committing" — without it, Claude moves fast and pushes before you've reviewed.</div>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <span class="news-num">06</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Set expectations for background tasks upfront</div>
+              <div class="news-item-body">When kicking off a long build, say "tell me when it finishes and what the exit code is."</div>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <span class="news-num">07</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Load handoff files at cross-project session start</div>
+              <div class="news-item-body">You write great handoffs — actually load them in the first message when switching between Orbit and Nexus.</div>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <span class="news-num">08</span>
+            <div class="news-item-content">
+              <div class="news-item-title">Tell Claude to read repo rules before starting</div>
+              <div class="news-item-body">Nexus has .agents/ai-mistakes-log.mdc with known pitfalls — add it to your opening message every time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pane-growth -->
+
+  </div><!-- /pane-area -->
+
+  <!-- ── Add Item Modal ── -->
+  <div class="add-modal-overlay" id="addModalOverlay">
+    <div class="add-modal">
+      <div class="add-modal-header">
+        <span class="add-modal-title">Add to digest</span>
+        <button class="add-modal-close" id="addModalClose" aria-label="Close">✕</button>
+      </div>
+
+      <div class="add-mode-toggle">
+        <button class="add-mode-btn active" id="modeManualBtn">Manual</button>
+        <button class="add-mode-btn" id="modeLinkBtn">From link</button>
+      </div>
+
+      <form class="add-form" id="addItemForm">
+        <div class="add-field hidden" id="fieldLinkWrap">
+          <label class="add-label" for="inputLink">URL</label>
+          <input class="add-input" type="url" id="inputLink" placeholder="https://…">
+        </div>
+
+        <div class="add-field" id="fieldHeaderWrap">
+          <label class="add-label" for="inputHeader">Header</label>
+          <input class="add-input" type="text" id="inputHeader" placeholder="What needs attention?" required>
+        </div>
+
+        <div class="add-field" id="fieldSubtextWrap">
+          <label class="add-label" for="inputSubtext">Subtext</label>
+          <input class="add-input" type="text" id="inputSubtext" placeholder="Channel · context">
+        </div>
+
+        <div class="add-field" id="fieldContextWrap">
+          <label class="add-label" for="inputContext">Action details</label>
+          <textarea class="add-input add-textarea" id="inputContext" placeholder="What do you need to do?"></textarea>
+        </div>
+
+        <div class="add-field">
+          <label class="add-label">Add to</label>
+          <div class="add-tab-picker">
+            <button type="button" class="add-tab-pick active" id="pickToday">Today</button>
+            <button type="button" class="add-tab-pick" id="pickCommunity">Community</button>
+          </div>
+        </div>
+
+        <button type="submit" class="add-submit-btn">Add to digest</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Resize handle ── -->
+  <div class="resize-handle" id="resizeHandle"></div>
+
+  <!-- ── Source Pulse ── -->
+  <div class="pulse-area" id="pulseArea" style="display:none">
+    <div class="pulse-label">Source Pulse</div>
+    <div class="pulse-grid" id="pulseGrid"></div>
+  </div>
+
+</div><!-- /widget -->
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script>
+/* ── Data rendering ─────────────────────────────────────── */
+function h(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const EFFORT_CLASS = {
+  reply: 'effort-reply', design: 'effort-design', review: 'effort-review',
+  decision: 'effort-decision', followup: 'effort-followup'
+};
+
+function cardHtml(card) {
+  const effortHtml = card.effort
+    ? `<span class="ca-dot-extra ca-dot">·</span><span class="ca-effort ${EFFORT_CLASS[card.effort] || ''}">${h(card.effortLabel)}</span>`
+    : '';
+  const attrs = [
+    card.id        ? `data-id="${h(card.id)}"` : '',
+    card.context   ? `data-context="${h(card.context)}"` : '',
+    card.href      ? `data-href="${h(card.href)}"` : '',
+    card.hrefLabel ? `data-href-label="${h(card.hrefLabel)}"` : '',
+    card.noDone    ? 'data-no-done' : ''
+  ].filter(Boolean).join(' ');
+  const cls = 'card' + (card.waiting ? ' card-waiting' : '');
+  return `<div class="${cls}" ${attrs}>
+    <div class="card-header">
+      <div class="card-subject">${h(card.subject)}</div>
+      <div class="card-about">
+        <span class="ca-who">${h(card.who)}</span>
+        <span class="ca-dot">·</span>
+        <span class="ca-meta">${h(card.meta || '')}</span>
+        ${effortHtml}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderPane(sections) {
+  return (sections || []).map(s =>
+    `<div class="section-label">${h(s.section)}</div>` + (s.cards || []).map(cardHtml).join('')
+  ).join('');
+}
+
+function renderPulse(summaries) {
+  const area = document.getElementById('pulseArea');
+  const grid = document.getElementById('pulseGrid');
+  if (!summaries || !summaries.length) { area.style.display = 'none'; return; }
+  area.style.display = '';
+  grid.innerHTML = summaries.map(s =>
+    `<div class="pulse-item">
+      <span class="pulse-source">${h(s.name)}</span>
+      <span class="pulse-summary">${h(s.summary)}</span>
+    </div>`
+  ).join('');
+}
+
+function initData() {
+  const d = window.DIGEST_DATA;
+  if (!d) return;
+  const ts = d.meta && (d.meta.lastChecked || d.meta.lastUpdated);
+  if (ts) {
+    const dt = new Date(ts);
+    const label = isNaN(dt) ? ts
+      : dt.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    document.getElementById('headerTs').textContent = `${d.meta.name || 'Ruta Roberts'} · ${label}`;
+  }
+  document.getElementById('content-today').innerHTML     = renderPane(d.today);
+  document.getElementById('content-community').innerHTML = renderPane(d.community);
+
+  renderPulse(d.SOURCE_SUMMARIES || []);
+
+  // Remove any cards the user already dismissed (persisted in localStorage)
+  const dismissed = JSON.parse(localStorage.getItem('digest-dismissed') || '[]');
+  if (dismissed.length) {
+    document.querySelectorAll('.card[data-id]').forEach(card => {
+      if (dismissed.includes(card.dataset.id)) card.remove();
+    });
+  }
+}
+
+/* ── Tabs ───────────────────────────────────────────────── */
+function switchTab(name) {
+  ['today','community','growth'].forEach(id => {
+    document.getElementById('tab-' + id).classList.toggle('active', id === name);
+    document.getElementById('pane-' + id).classList.toggle('active', id === name);
+  });
+}
+
+/* ── Refresh — calls local server if running, else reloads ─ */
+async function doRefresh() {
+  const btn  = document.getElementById('refBtn');
+  const icon = document.getElementById('refIcon');
+  if (btn.classList.contains('loading')) return;
+
+  btn.classList.add('loading');
+  icon.classList.add('spin');
+
+  ['today','community'].forEach(id => {
+    const skel    = document.getElementById('skel-' + id);
+    const content = document.getElementById('content-' + id);
+    if (skel && content) { skel.classList.add('visible'); content.style.display = 'none'; }
+  });
+
+  // Check if the live server is running first
+  let serverUp = false;
+  try {
+    const ping = await fetch('http://127.0.0.1:3141/ping', { signal: AbortSignal.timeout(1200) });
+    serverUp = (await ping.json()).ok === true;
+  } catch (_) {}
+
+  if (serverUp) {
+    // Live refresh: call server → claude fetches Slack/email/calendar → rewrites data.js
+    showToast('Checking Slack, email and calendar…');
+    try {
+      const res  = await fetch('http://127.0.0.1:3141/refresh', { signal: AbortSignal.timeout(300_000) });
+      const body = await res.json();
+      if (body.ok) {
+        location.reload();
+        return;
+      }
+      showToast('Refresh hit an error — reloading last data.');
+    } catch (e) {
+      showToast(e.name === 'TimeoutError'
+        ? 'Took too long — reloading last data.'
+        : 'Server error — reloading last data.');
+    }
+  } else {
+    showToast('Server offline — start it once with: node server.mjs');
+  }
+
+  // Fallback: reload the page using whatever data.js is on disk
+  setTimeout(() => location.reload(), 2200);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4200);
+}
+
+const arrowSvg = '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10L10 2M5 2h5v5"/></svg>';
+
+function wireCardExpand(card) {
+  if (card.querySelector('.card-expand')) return; // already wired
+  const context   = card.dataset.context;
+  const href      = card.dataset.href;
+  const hrefLabel = card.dataset.hrefLabel || 'Open';
+  const noDone    = card.hasAttribute('data-no-done');
+
+  const expand = document.createElement('div');
+  expand.className = 'card-expand';
+
+  const linkHtml = href
+    ? `<a class="card-open-link" href="${href}" target="_blank" onclick="event.stopPropagation()">${hrefLabel} ${arrowSvg}</a>`
+    : '<span></span>';
+
+  const doneHtml = !noDone
+    ? `<button class="card-done-btn" onclick="dismissCard(event,this)">Done</button>`
+    : '';
+
+  expand.innerHTML = `<div class="card-context">${context || ''}</div><div class="card-actions">${linkHtml}${doneHtml}</div>`;
+  card.appendChild(expand);
+
+  card.addEventListener('click', function(e) {
+    if (e.target.closest('.card-open-link,.card-done-btn')) return;
+    toggleCard(card);
+  });
+}
+
+function initCards() {
+  document.querySelectorAll('.card[data-context]').forEach(wireCardExpand);
+}
+
+/* ── Manually-added items (localStorage) ───────────────── */
+const ADDED_KEY = 'digest-added';
+
+function renderAddedItems() {
+  const items     = JSON.parse(localStorage.getItem(ADDED_KEY) || '[]');
+  const dismissed = JSON.parse(localStorage.getItem('digest-dismissed') || '[]');
+  ['today', 'community'].forEach(tab => {
+    const content  = document.getElementById('content-' + tab);
+    if (!content) return;
+    const tabItems = items.filter(i => i.tab === tab && !dismissed.includes(i.id));
+    if (!tabItems.length) return;
+    const label = document.createElement('div');
+    label.className = 'section-label added-label';
+    label.textContent = 'Added';
+    content.prepend(label);
+    [...tabItems].reverse().forEach(item => {
+      const el = buildAddedCardEl(item);
+      label.after(el);
+    });
+  });
+}
+
+function buildAddedCardEl(item) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = cardHtml({
+    id:        item.id,
+    subject:   item.header,
+    who:       item.subtext || 'Added manually',
+    meta:      '',
+    context:   item.context || '',
+    href:      item.href    || '',
+    hrefLabel: item.href    ? 'Open link' : '',
+  });
+  return tmp.firstElementChild;
+}
+
+/* ── Add modal ──────────────────────────────────────────── */
+let addMode = 'manual';
+let addTab  = 'today';
+
+function openAddModal() {
+  document.getElementById('addModalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('inputHeader').focus(), 80);
+}
+
+function closeAddModal() {
+  document.getElementById('addModalOverlay').classList.remove('open');
+}
+
+function setAddMode(mode) {
+  addMode = mode;
+  document.getElementById('modeManualBtn').classList.toggle('active', mode === 'manual');
+  document.getElementById('modeLinkBtn').classList.toggle('active', mode === 'link');
+  document.getElementById('fieldLinkWrap').classList.toggle('hidden', mode !== 'link');
+  document.getElementById('fieldContextWrap').classList.toggle('hidden', mode === 'link');
+  document.getElementById('inputLink').required = (mode === 'link');
+}
+
+function setAddTab(tab) {
+  addTab = tab;
+  document.getElementById('pickToday').classList.toggle('active', tab === 'today');
+  document.getElementById('pickCommunity').classList.toggle('active', tab === 'community');
+}
+
+function submitAddItem(e) {
+  e.preventDefault();
+  const header  = document.getElementById('inputHeader').value.trim();
+  const subtext = document.getElementById('inputSubtext').value.trim();
+  const context = document.getElementById('inputContext').value.trim();
+  const link    = document.getElementById('inputLink').value.trim();
+  if (!header) { document.getElementById('inputHeader').focus(); return; }
+
+  const item = {
+    id:      'added-' + Date.now(),
+    tab:     addTab,
+    header,
+    subtext,
+    context,
+    href:    link,
+  };
+
+  const items = JSON.parse(localStorage.getItem(ADDED_KEY) || '[]');
+  items.unshift(item);
+  localStorage.setItem(ADDED_KEY, JSON.stringify(items));
+
+  // Inject card live into the pane
+  const content = document.getElementById('content-' + addTab);
+  if (content) {
+    let label = content.querySelector('.added-label');
+    if (!label) {
+      label = document.createElement('div');
+      label.className = 'section-label added-label';
+      label.textContent = 'Added';
+      content.prepend(label);
+    }
+    const card = buildAddedCardEl(item);
+    label.after(card);
+    if (item.context || item.href) wireCardExpand(card);
+  }
+
+  document.getElementById('addItemForm').reset();
+  closeAddModal();
+  switchTab(addTab);
+  showToast('Added to ' + (addTab === 'today' ? 'Today' : 'Community'));
+}
+
+function initAddModal() {
+  document.getElementById('addModalClose').addEventListener('click', closeAddModal);
+  document.getElementById('addModalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('addModalOverlay')) closeAddModal();
+  });
+  document.getElementById('modeManualBtn').addEventListener('click', () => setAddMode('manual'));
+  document.getElementById('modeLinkBtn').addEventListener('click',   () => setAddMode('link'));
+  document.getElementById('pickToday').addEventListener('click',     () => setAddTab('today'));
+  document.getElementById('pickCommunity').addEventListener('click', () => setAddTab('community'));
+  document.getElementById('addItemForm').addEventListener('submit',  submitAddItem);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAddModal();
+  });
+}
+
+function toggleCard(card) {
+  const wasExpanded = card.classList.contains('expanded');
+  document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!wasExpanded) card.classList.add('expanded');
+}
+
+function dismissCard(e, btn) {
+  e.stopPropagation();
+  const card = btn.closest('.card');
+  const id = card.dataset.id;
+
+  // Persist dismissal so it survives page reloads and the next regeneration
+  if (id) {
+    const dismissed = JSON.parse(localStorage.getItem('digest-dismissed') || '[]');
+    if (!dismissed.includes(id)) dismissed.push(id);
+    localStorage.setItem('digest-dismissed', JSON.stringify(dismissed));
+
+    // Also tell the server so regenerate.sh skips this id next run
+    fetch('http://127.0.0.1:3141/dismiss', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+      signal: AbortSignal.timeout(2000)
+    }).catch(() => {});
+  }
+
+  card.classList.remove('expanded');
+
+  const h = card.offsetHeight;
+  card.style.maxHeight = h + 'px';
+  card.style.overflow  = 'hidden';
+  card.style.flexShrink = '0';
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    card.style.transition = [
+      'opacity 200ms ease',
+      'transform 180ms ease',
+      'max-height 300ms ease 160ms',
+      'padding-top 300ms ease 160ms',
+      'padding-bottom 300ms ease 160ms',
+      'margin-top 300ms ease 160ms'
+    ].join(',');
+    card.style.opacity   = '0';
+    card.style.transform = 'translateX(10px)';
+    card.style.maxHeight = '0';
+    card.style.paddingTop    = '0';
+    card.style.paddingBottom = '0';
+    card.style.marginTop     = '0';
+    setTimeout(() => card.remove(), 480);
+  }));
+}
+
+/* ── Resize + board mode ────────────────────────────────── */
+function initResize() {
+  const widget  = document.querySelector('.widget');
+  const handle  = document.getElementById('resizeHandle');
+  const MIN_W   = 360;
+
+  // Restore saved width
+  const saved = localStorage.getItem('digest-width');
+  if (saved) {
+    widget.style.width    = saved + 'px';
+    widget.style.maxWidth = 'none';
+  }
+
+  // ResizeObserver drives board mode at 880px+
+  new ResizeObserver(entries => {
+    for (const e of entries) {
+      widget.classList.toggle('board-mode', e.contentRect.width >= 880);
+    }
+  }).observe(widget);
+
+  // Drag to resize
+  let startX, startW;
+
+  handle.addEventListener('mousedown', e => {
+    startX = e.clientX;
+    startW = widget.offsetWidth;
+    handle.classList.add('active');
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onUp);
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  function onMove(e) {
+    const maxW  = window.innerWidth - 48;
+    const newW  = Math.max(MIN_W, Math.min(startW + e.clientX - startX, maxW));
+    widget.style.width    = newW + 'px';
+    widget.style.maxWidth = 'none';
+  }
+
+  function onUp() {
+    handle.classList.remove('active');
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onUp);
+    document.body.style.userSelect = '';
+    localStorage.setItem('digest-width', widget.offsetWidth);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initData();
+  renderAddedItems();
+  initCards();
+  initResize();
+  initAddModal();
+});
+</script>
+</body>
+</html>

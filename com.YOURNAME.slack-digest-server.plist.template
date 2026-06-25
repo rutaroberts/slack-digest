@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- LaunchAgent: keeps the refresh server running at http://127.0.0.1:3141.
+     Required only if you want the Refresh button to pull live data.
+     See README.md for setup instructions. -->
+<plist version="1.0">
+<dict>
+
+  <!-- Replace com.YOURNAME with e.g. com.jsmith -->
+  <key>Label</key>
+  <string>com.YOURNAME.slack-digest-server</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <!-- Replace with the absolute path to YOUR copy of this repo -->
+    <string>YOUR_REPO_PATH/tools/slack-digest/server.mjs</string>
+  </array>
+
+  <!-- Keep the server running — restart it automatically if it crashes -->
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <!-- Add any extra paths where your node/claude CLI live -->
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:YOUR_HOME/.claude/local:YOUR_HOME/.local/bin</string>
+    <key>HOME</key>
+    <string>YOUR_HOME</string>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>YOUR_REPO_PATH/tools/slack-digest/server.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>YOUR_REPO_PATH/tools/slack-digest/server.log</string>
+
+</dict>
+</plist>
