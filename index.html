@@ -994,6 +994,26 @@ body {
 .settings-save-btn:hover { opacity:.88; }
 .settings-save-btn:active { transform:scale(.98); }
 
+.settings-textarea {
+  resize: none;
+  min-height: 88px;
+}
+.settings-feedback-btn {
+  width: 100%; padding: 11px;
+  border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.07);
+  color: var(--fg-primary);
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--dur-150) var(--ease-core),
+    border-color var(--dur-150) var(--ease-core),
+    transform var(--dur-100) var(--ease-core);
+}
+.settings-feedback-btn:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22); }
+.settings-feedback-btn:active { transform: scale(.98); }
+
 /* ─── Onboarding ────────────────────────────────────────── */
 .onboarding-overlay {
   position:fixed; inset:0; background:var(--bg-secondary); z-index:300;
@@ -1151,13 +1171,13 @@ body {
         </div>
 
         <div class="news-feature">
-          <div class="news-headline">Pre-authenticate MCPs before every session</div>
-          <div class="news-feature-body">Run /mcp at the start of every session. Not mid-task when something breaks. Before you need it.</div>
+          <div class="news-headline">Authenticate before you need to</div>
+          <div class="news-feature-body">Run /mcp at the start of every session. A broken tool mid-task is a different kind of interruption than one you caught before you began.</div>
         </div>
 
         <div class="news-feature">
-          <div class="news-headline">Give constraints upfront, not after</div>
-          <div class="news-feature-body">Before any code task, say what you tried, what the rules are, and what done looks like. Claude reads everything you give it.</div>
+          <div class="news-headline">Context is the whole game</div>
+          <div class="news-feature-body">Tell Claude what you tried, what the rules are, and what done looks like. It reads everything. Most problems live in what you left out.</div>
         </div>
       </div>
 
@@ -1170,64 +1190,64 @@ body {
           <div class="news-item">
             <span class="news-num">01</span>
             <div class="news-item-content">
-              <div class="news-item-title">Reset sessions when stuck</div>
-              <div class="news-item-body">Start a new session with just the error and what you tried. Long failed sessions get worse, not better.</div>
+              <div class="news-item-title">A new session beats a long one that's lost</div>
+              <div class="news-item-body">Open a new session with just the error and what you tried. Long failed sessions accumulate confusion. They do not resolve it.</div>
             </div>
           </div>
 
           <div class="news-item">
             <span class="news-num">02</span>
             <div class="news-item-content">
-              <div class="news-item-title">Give constraints upfront, not after</div>
-              <div class="news-item-body">What you tried, what the rules are, what done looks like. Say it before Claude starts.</div>
+              <div class="news-item-title">Say the constraints before work begins</div>
+              <div class="news-item-body">What you tried. What the rules are. What done looks like. Say it first, not after something goes sideways.</div>
             </div>
           </div>
 
           <div class="news-item">
             <span class="news-num">03</span>
             <div class="news-item-content">
-              <div class="news-item-title">Pre-authenticate MCPs before every session</div>
-              <div class="news-item-body">Run /mcp before the session starts. Not after something fails.</div>
+              <div class="news-item-title">Authenticate MCPs before the session, not during</div>
+              <div class="news-item-body">Run /mcp first. A tool that fails mid-task breaks the thread. A tool that was never ready breaks your trust in the output.</div>
             </div>
           </div>
 
           <div class="news-item">
             <span class="news-num">04</span>
             <div class="news-item-content">
-              <div class="news-item-title">Ask Claude to verify before acting on audits</div>
-              <div class="news-item-body">After any audit, ask which findings are actually used. One grep saves a full PR cycle.</div>
+              <div class="news-item-title">Verify findings before you act on them</div>
+              <div class="news-item-body">After any audit, ask which items are actually in use. One grep is worth a full PR cycle. The confident finding is not always the correct one.</div>
             </div>
           </div>
 
           <div class="news-item">
             <span class="news-num">05</span>
             <div class="news-item-content">
-              <div class="news-item-title">Approve diffs before committing</div>
-              <div class="news-item-body">Say "show me the diff before committing." Without that, Claude moves fast and commits before you have looked.</div>
+              <div class="news-item-title">Read the diff before it becomes a commit</div>
+              <div class="news-item-body">Say "show me the diff before committing." Without that instruction, Claude moves and commits before you have had a chance to look.</div>
             </div>
           </div>
 
           <div class="news-item">
             <span class="news-num">06</span>
             <div class="news-item-content">
-              <div class="news-item-title">Set expectations for background tasks upfront</div>
-              <div class="news-item-body">When starting a long task, say "tell me when it finishes." Claude will wait and report back.</div>
+              <div class="news-item-title">Ask for a signal when the task is long</div>
+              <div class="news-item-body">When starting anything slow, say "tell me when you're done." Claude will wait in silence and report back. Otherwise it disappears into the work.</div>
             </div>
           </div>
 
           <div class="news-item">
             <span class="news-num">07</span>
             <div class="news-item-content">
-              <div class="news-item-title">Load handoff files at cross-project session start</div>
-              <div class="news-item-body">You write good handoffs. Load them in the first message when switching projects. Claude does not remember the last session.</div>
+              <div class="news-item-title">Carry your handoff into every new session</div>
+              <div class="news-item-body">You write good handoffs. Load them in the first message when you switch projects. Claude arrived just now. It has no memory of before.</div>
             </div>
           </div>
 
           <div class="news-item">
             <span class="news-num">08</span>
             <div class="news-item-content">
-              <div class="news-item-title">Tell Claude to read repo rules before starting</div>
-              <div class="news-item-body">Nexus has a mistakes log at .agents/ai-mistakes-log.mdc. Add it to your first message every time. The same errors repeat if you do not.</div>
+              <div class="news-item-title">Show Claude the mistakes log on day one</div>
+              <div class="news-item-body">Nexus keeps a log at .agents/ai-mistakes-log.mdc. Add it to your first message every time. The same errors will return if no one names them.</div>
             </div>
           </div>
         </div>
@@ -1417,6 +1437,17 @@ body {
         </div>
 
       </div><!-- /integrations -->
+
+      <!-- Feedback -->
+      <div class="settings-section">
+        <div class="settings-section-label">Feedback</div>
+        <div class="settings-section-hint">What's working, what's not, or what you'd love to see.</div>
+        <div class="settings-field" style="margin-top:12px">
+          <textarea class="settings-input settings-textarea" id="feedbackText" placeholder="Share your thoughts…"></textarea>
+        </div>
+        <button type="button" class="settings-feedback-btn" id="feedbackSubmit">Send feedback</button>
+      </div>
+
     </div><!-- /settings-body -->
 
     <div class="settings-footer">
@@ -1928,6 +1959,12 @@ function initSettings() {
     if (e.target === document.getElementById('settingsOverlay')) closeSettings();
   });
   document.getElementById('settingsSave').addEventListener('click', saveSettings);
+  document.getElementById('feedbackSubmit').addEventListener('click', () => {
+    const txt = document.getElementById('feedbackText').value.trim();
+    if (!txt) { document.getElementById('feedbackText').focus(); return; }
+    document.getElementById('feedbackText').value = '';
+    showToast('Thanks for your feedback!');
+  });
   for (const [key, def] of Object.entries(TOOL_DEFS)) {
     const cb = document.getElementById(def.checkbox);
     if (cb) cb.addEventListener('change', () => updateToolFields(key, cb.checked));

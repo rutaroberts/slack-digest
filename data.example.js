@@ -8,46 +8,46 @@ window.DIGEST_DATA = {
   },
   today: [
     {
-      section: "Do this",
+      section: "Your move",
       cards: [
         {
           id: "slack-DABC123456-1780000001",
           dateAdded: "2026-06-23",
-          subject: "Reply to Alex — timeline for design review",
+          subject: "Alex is waiting on the design review date",
           who: "Alex Kim",
           meta: "DM · 9:14 AM",
           effort: "reply",
           effortLabel: "Reply",
-          context: "Alex asked if the design review can move to Thursday — they have a conflict on Wednesday. Needs a yes/no today.",
+          context: "Alex has a conflict Wednesday. She wants to move the review to Thursday. One word from you closes it.",
           href: "https://yourcompany.enterprise.slack.com/archives/DABC123456/p1780000001",
-          hrefLabel: "Open DM",
+          hrefLabel: "Go to thread",
           resolveCheck: { type: "slack-reply", channel: "DABC123456", from: "Your Name" }
         },
         {
           id: "slack-DABC789012-1780000002",
           dateAdded: "2026-06-20",
-          subject: "⚠︎ Update the onboarding flow spec",
+          subject: "⚠︎ The onboarding spec has open comments",
           who: "Jordan Lee",
           meta: "DM · Jun 20",
           effort: "design",
           effortLabel: "Design",
-          context: "Jordan needs the updated spec before the eng sync Thursday. Last message was a Figma link with comments to address.",
+          context: "Jordan needs the spec before Thursday's sync. The last Figma link had comments that are still unanswered.",
           href: "https://yourcompany.enterprise.slack.com/archives/DABC789012/p1780000002",
-          hrefLabel: "Open DM",
+          hrefLabel: "Go to thread",
           resolveCheck: { type: "slack-delivery", channel: "DABC789012", from: "Your Name", keywords: ["figma", "updated", "here", "done", "shared", "link"] }
         }
       ]
     },
     {
-      section: "Waiting on others",
+      section: "Their turn",
       cards: [
         {
           id: "slack-DABC345678-1780000003",
           dateAdded: "2026-06-23",
-          subject: "Sam — confirmation on launch date",
+          subject: "Sam hasn't confirmed the launch date",
           who: "Sam Rivera",
           meta: "DM · 8:30 AM",
-          context: "You asked Sam to confirm the launch date. No reply yet.",
+          context: "You asked. Nothing back yet.",
           waiting: true,
           noDone: true,
           resolveCheck: { type: "slack-reply", channel: "DABC345678", from: "Sam Rivera" }
@@ -57,15 +57,15 @@ window.DIGEST_DATA = {
   ],
   community: [
     {
-      section: "What's happening",
+      section: "Around you",
       cards: [
         {
           id: "slack-CABC111222-1780000004",
           dateAdded: "2026-06-23",
-          subject: "Q2 retro notes are posted",
+          subject: "Q2 retro notes are live",
           who: "Taylor Nguyen",
           meta: "#team-all · 10:05 AM",
-          context: "Taylor shared the retro action items doc. Three items assigned to the design team.",
+          context: "Taylor posted the action items. Three go to design.",
           href: "https://yourcompany.enterprise.slack.com/archives/CABC111222/p1780000004",
           hrefLabel: "Open in Slack",
           noDone: true
