@@ -739,7 +739,7 @@ body {
 /* ─── Add Item Modal ───────────────────────────────────── */
 /* ─── Add sheet — bottom sheet matching settings panel ──── */
 .add-modal-overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0,0,0,.6);
   z-index: 200;
@@ -751,16 +751,15 @@ body {
 
 .add-modal {
   position: absolute;
-  bottom: 0; left: 50%;
-  transform: translateX(-50%) translateY(104%);
-  width: 100%; max-width: 560px;
+  bottom: 0; left: 0; right: 0;
+  transform: translateY(104%);
   background: var(--bg-primary);
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(248,248,248,.06);
   overflow: hidden;
   transition: transform var(--dur-400) var(--ease-decel);
 }
-.add-modal-overlay.open .add-modal { transform: translateX(-50%) translateY(0); }
+.add-modal-overlay.open .add-modal { transform: translateY(0); }
 
 .add-modal-header {
   display: flex;
@@ -882,7 +881,7 @@ body {
 .header-actions { display:flex; align-items:center; gap:8px; }
 
 .settings-overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0,0,0,.6);
   z-index: 200;
@@ -894,16 +893,16 @@ body {
 
 .settings-panel {
   position: absolute;
-  bottom: 0; left: 50%;
-  transform: translateX(-50%) translateY(104%);
-  width: 100%; max-width: 560px; max-height: 88vh;
+  top: 0; left: 0; right: 0;
+  transform: translateY(-104%);
+  max-height: 100%;
   background: var(--bg-primary);
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(248,248,248,.06);
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(248,248,248,.06);
   display: flex; flex-direction: column; overflow: hidden;
   transition: transform var(--dur-400) var(--ease-decel);
 }
-.settings-overlay.open .settings-panel { transform: translateX(-50%) translateY(0); }
+.settings-overlay.open .settings-panel { transform: translateY(0); }
 
 .settings-panel-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -1148,17 +1147,17 @@ body {
       <div class="pane-col-header">Growth</div>
       <div class="news-section">
         <div class="news-rule">
-          <span class="news-rule-label">Fix these first</span>
+          <span class="news-rule-label">Start here</span>
         </div>
 
         <div class="news-feature">
           <div class="news-headline">Pre-authenticate MCPs before every session</div>
-          <div class="news-feature-body">Run /mcp at the start of every session, not mid-task when something breaks. Treat it like connecting to VPN.</div>
+          <div class="news-feature-body">Run /mcp at the start of every session. Not mid-task when something breaks. Before you need it.</div>
         </div>
 
         <div class="news-feature">
           <div class="news-headline">Give constraints upfront, not after</div>
-          <div class="news-feature-body">Before any code or PR task, tell Claude what you've tried, which conventions apply, and what "done" looks like.</div>
+          <div class="news-feature-body">Before any code task, say what you tried, what the rules are, and what done looks like. Claude reads everything you give it.</div>
         </div>
       </div>
 
@@ -1172,7 +1171,7 @@ body {
             <span class="news-num">01</span>
             <div class="news-item-content">
               <div class="news-item-title">Reset sessions when stuck</div>
-              <div class="news-item-body">Fresh session with just the error and what you tried. Long failed sessions degrade quality.</div>
+              <div class="news-item-body">Start a new session with just the error and what you tried. Long failed sessions get worse, not better.</div>
             </div>
           </div>
 
@@ -1180,7 +1179,7 @@ body {
             <span class="news-num">02</span>
             <div class="news-item-content">
               <div class="news-item-title">Give constraints upfront, not after</div>
-              <div class="news-item-body">Before any code or PR task — what you tried, conventions, what "done" looks like.</div>
+              <div class="news-item-body">What you tried, what the rules are, what done looks like. Say it before Claude starts.</div>
             </div>
           </div>
 
@@ -1188,7 +1187,7 @@ body {
             <span class="news-num">03</span>
             <div class="news-item-content">
               <div class="news-item-title">Pre-authenticate MCPs before every session</div>
-              <div class="news-item-body">Treat it like connecting to VPN — not mid-task when something fails.</div>
+              <div class="news-item-body">Run /mcp before the session starts. Not after something fails.</div>
             </div>
           </div>
 
@@ -1196,7 +1195,7 @@ body {
             <span class="news-num">04</span>
             <div class="news-item-content">
               <div class="news-item-title">Ask Claude to verify before acting on audits</div>
-              <div class="news-item-body">After any analysis, ask "which of these are actually used in the app?" One grep saves a full PR cycle.</div>
+              <div class="news-item-body">After any audit, ask which findings are actually used. One grep saves a full PR cycle.</div>
             </div>
           </div>
 
@@ -1204,7 +1203,7 @@ body {
             <span class="news-num">05</span>
             <div class="news-item-content">
               <div class="news-item-title">Approve diffs before committing</div>
-              <div class="news-item-body">Say "show me the diff before committing" — without it, Claude moves fast and pushes before you've reviewed.</div>
+              <div class="news-item-body">Say "show me the diff before committing." Without that, Claude moves fast and commits before you have looked.</div>
             </div>
           </div>
 
@@ -1212,7 +1211,7 @@ body {
             <span class="news-num">06</span>
             <div class="news-item-content">
               <div class="news-item-title">Set expectations for background tasks upfront</div>
-              <div class="news-item-body">When kicking off a long build, say "tell me when it finishes and what the exit code is."</div>
+              <div class="news-item-body">When starting a long task, say "tell me when it finishes." Claude will wait and report back.</div>
             </div>
           </div>
 
@@ -1220,7 +1219,7 @@ body {
             <span class="news-num">07</span>
             <div class="news-item-content">
               <div class="news-item-title">Load handoff files at cross-project session start</div>
-              <div class="news-item-body">You write great handoffs — actually load them in the first message when switching between Orbit and Nexus.</div>
+              <div class="news-item-body">You write good handoffs. Load them in the first message when switching projects. Claude does not remember the last session.</div>
             </div>
           </div>
 
@@ -1228,7 +1227,7 @@ body {
             <span class="news-num">08</span>
             <div class="news-item-content">
               <div class="news-item-title">Tell Claude to read repo rules before starting</div>
-              <div class="news-item-body">Nexus has .agents/ai-mistakes-log.mdc with known pitfalls — add it to your opening message every time.</div>
+              <div class="news-item-body">Nexus has a mistakes log at .agents/ai-mistakes-log.mdc. Add it to your first message every time. The same errors repeat if you do not.</div>
             </div>
           </div>
         </div>
@@ -1242,7 +1241,7 @@ body {
   <div class="add-modal-overlay" id="addModalOverlay">
     <div class="add-modal">
       <div class="add-modal-header">
-        <span class="add-modal-title">Add to digest</span>
+        <span class="add-modal-title">Add to Brief</span>
         <button class="add-modal-close" id="addModalClose" aria-label="Close">✕</button>
       </div>
       <form class="add-form" id="addItemForm">
@@ -1261,16 +1260,12 @@ body {
 
   <!-- ── Source Pulse ── -->
   <div class="pulse-area" id="pulseArea" style="display:none">
-    <div class="pulse-label">Source Pulse</div>
+    <div class="pulse-label">Sources</div>
     <div class="pulse-grid" id="pulseGrid"></div>
   </div>
 
-</div><!-- /widget -->
-
-<div class="toast" id="toast"></div>
-
-<!-- ── Settings overlay ── -->
-<div class="settings-overlay" id="settingsOverlay">
+  <!-- ── Settings overlay ── -->
+  <div class="settings-overlay" id="settingsOverlay">
   <div class="settings-panel">
     <div class="settings-panel-header">
       <span class="settings-panel-title">Settings</span>
@@ -1299,7 +1294,7 @@ body {
       <!-- Integrations -->
       <div class="settings-section">
         <div class="settings-section-label">Integrations</div>
-        <div class="settings-section-hint">Enable the sources you want Claude to scan when you hit Refresh.</div>
+        <div class="settings-section-hint">Brief reads whatever you turn on.</div>
 
         <div class="settings-tool">
           <div class="settings-tool-row">
@@ -1307,7 +1302,7 @@ body {
               <span class="settings-tool-icon">💬</span>
               <div>
                 <div class="settings-tool-name">Slack</div>
-                <div class="settings-tool-desc">DMs, saved messages, channels</div>
+                <div class="settings-tool-desc">Messages and saved items</div>
               </div>
             </div>
             <label class="toggle">
@@ -1329,7 +1324,7 @@ body {
               <span class="settings-tool-icon">🔧</span>
               <div>
                 <div class="settings-tool-name">Jira</div>
-                <div class="settings-tool-desc">Issues assigned to you, status changes</div>
+                <div class="settings-tool-desc">Tickets assigned to you</div>
               </div>
             </div>
             <label class="toggle">
@@ -1339,7 +1334,7 @@ body {
           </div>
           <div class="settings-tool-fields hidden" id="toolJiraFields">
             <div class="settings-field">
-              <label class="settings-field-label">Project keys (comma-separated)</label>
+              <label class="settings-field-label">Project keys, separated by commas</label>
               <input type="text" class="settings-input" id="jiraProjects" placeholder="MAIL, DESIGN, INFRA" />
             </div>
           </div>
@@ -1351,7 +1346,7 @@ body {
               <span class="settings-tool-icon">📅</span>
               <div>
                 <div class="settings-tool-name">Google Calendar</div>
-                <div class="settings-tool-desc">Upcoming events and scheduling context</div>
+                <div class="settings-tool-desc">Your upcoming events</div>
               </div>
             </div>
             <label class="toggle">
@@ -1367,7 +1362,7 @@ body {
               <span class="settings-tool-icon">✉️</span>
               <div>
                 <div class="settings-tool-name">Gmail</div>
-                <div class="settings-tool-desc">Sent mail and pending email threads</div>
+                <div class="settings-tool-desc">Emails waiting for a reply</div>
               </div>
             </div>
             <label class="toggle">
@@ -1383,7 +1378,7 @@ body {
               <span class="settings-tool-icon">🐙</span>
               <div>
                 <div class="settings-tool-name">GitHub</div>
-                <div class="settings-tool-desc">PRs waiting on you, review requests</div>
+                <div class="settings-tool-desc">Pull requests and reviews</div>
               </div>
             </div>
             <label class="toggle">
@@ -1393,7 +1388,7 @@ body {
           </div>
           <div class="settings-tool-fields hidden" id="toolGithubFields">
             <div class="settings-field">
-              <label class="settings-field-label">Repos to watch (comma-separated)</label>
+              <label class="settings-field-label">Repos, separated by commas</label>
               <input type="text" class="settings-input" id="githubRepos" placeholder="org/repo-1, org/repo-2" />
             </div>
           </div>
@@ -1405,7 +1400,7 @@ body {
               <span class="settings-tool-icon">🔺</span>
               <div>
                 <div class="settings-tool-name">Linear</div>
-                <div class="settings-tool-desc">Issues and team updates</div>
+                <div class="settings-tool-desc">Tasks and team updates</div>
               </div>
             </div>
             <label class="toggle">
@@ -1415,7 +1410,7 @@ body {
           </div>
           <div class="settings-tool-fields hidden" id="toolLinearFields">
             <div class="settings-field">
-              <label class="settings-field-label">Team keys (comma-separated)</label>
+              <label class="settings-field-label">Team keys, separated by commas</label>
               <input type="text" class="settings-input" id="linearTeams" placeholder="DESIGN, ENG" />
             </div>
           </div>
@@ -1425,10 +1420,14 @@ body {
     </div><!-- /settings-body -->
 
     <div class="settings-footer">
-      <button class="settings-save-btn" id="settingsSave">Save settings</button>
+      <button class="settings-save-btn" id="settingsSave">Save</button>
     </div>
   </div>
-</div>
+</div><!-- /settings-overlay -->
+
+</div><!-- /widget -->
+
+<div class="toast" id="toast"></div>
 
 <script src="data.js"></script>
 <script>
@@ -1548,7 +1547,7 @@ async function doRefresh() {
 
   if (serverUp) {
     // Live refresh: call server → claude fetches Slack/email/calendar → rewrites data.js
-    showToast('Checking Slack, email and calendar…');
+    showToast('Brief is reading your tools…');
     try {
       const res  = await fetch('http://127.0.0.1:3141/refresh', { signal: AbortSignal.timeout(300_000) });
       const body = await res.json();
@@ -1556,14 +1555,14 @@ async function doRefresh() {
         location.reload();
         return;
       }
-      showToast('Refresh hit an error — reloading last data.');
+      showToast('Something went wrong. Showing last data.');
     } catch (e) {
       showToast(e.name === 'TimeoutError'
-        ? 'Took too long — reloading last data.'
-        : 'Server error — reloading last data.');
+        ? 'Took too long. Showing last data.'
+        : 'Something went wrong. Showing last data.');
     }
   } else {
-    showToast('Server offline — start it once with: node server.mjs');
+    showToast('Brief is not running. Start it with: node server.mjs');
   }
 
   // Fallback: reload the page using whatever data.js is on disk
@@ -1633,7 +1632,7 @@ function renderAddedItems() {
     if (!tabItems.length) return;
     const label = document.createElement('div');
     label.className = 'section-label added-label';
-    label.textContent = 'Added';
+    label.textContent = 'Yours';
     content.prepend(label);
     [...tabItems].reverse().forEach(item => {
       const el = buildAddedCardEl(item);
@@ -1711,7 +1710,7 @@ function submitAddItem(e) {
     if (!label) {
       label = document.createElement('div');
       label.className = 'section-label added-label';
-      label.textContent = 'Added';
+      label.textContent = 'Yours';
       content.prepend(label);
     }
     const card = buildAddedCardEl(item);
@@ -1722,7 +1721,7 @@ function submitAddItem(e) {
   document.getElementById('addItemForm').reset();
   closeAddModal();
   switchTab(addTab);
-  showToast('Added to ' + (addTab === 'today' ? 'Today' : 'Community'));
+  showToast('Added.');
 }
 
 function initAddModal() {
