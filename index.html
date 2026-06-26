@@ -2021,7 +2021,7 @@ async function obComplete() {
   overlay.classList.add('closing');
   setTimeout(() => { overlay.classList.remove('active','closing'); }, 400);
 
-  showToast('Welcome to Brief, ' + name.split(' ')[0] + ' 👋');
+  showToast('You are all set, ' + name.split(' ')[0] + '.');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2048,8 +2048,8 @@ document.addEventListener('DOMContentLoaded', () => {
     <!-- Step 1: Welcome -->
     <div class="ob-step active" id="obStep1">
       <div class="ob-badge">✦</div>
-      <h1 class="ob-title">Meet Brief</h1>
-      <p class="ob-desc">Your AI-powered daily digest. Brief pulls action items from Slack, Jira, Linear, GitHub, and more — so nothing slips through the cracks.</p>
+      <h1 class="ob-title">Brief</h1>
+      <p class="ob-desc">Brief checks your tools each day and shows you what needs a reply or action.</p>
       <div class="ob-spacer"></div>
       <button class="ob-btn-primary" id="obNext1">Get started</button>
     </div>
@@ -2057,7 +2057,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <!-- Step 2: Identity -->
     <div class="ob-step" id="obStep2">
       <h2 class="ob-title">Who are you?</h2>
-      <p class="ob-desc">Brief uses your name and email to find messages addressed to you across your tools.</p>
+      <p class="ob-desc">So Brief knows whose messages to look for.</p>
       <div class="ob-spacer"></div>
       <div class="ob-fields">
         <div class="settings-field">
@@ -2076,47 +2076,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <!-- Step 3: Tools -->
     <div class="ob-step" id="obStep3">
-      <h2 class="ob-title">What should Brief scan?</h2>
-      <p class="ob-desc">Pick your tools. You can always change this in Settings.</p>
+      <h2 class="ob-title">Pick your tools</h2>
+      <p class="ob-desc">Brief will check these when you hit Refresh. You can change them later.</p>
       <div class="ob-tools">
         <label class="ob-tool-label">
           <input type="checkbox" id="obToolSlack" checked />
           <span class="ob-check"></span>
           <span class="ob-tool-emoji">💬</span>
-          <div><div class="ob-tool-name">Slack</div><div class="ob-tool-hint">DMs, saved messages, channels</div></div>
+          <div><div class="ob-tool-name">Slack</div><div class="ob-tool-hint">Messages and saved items</div></div>
         </label>
         <label class="ob-tool-label">
           <input type="checkbox" id="obToolJira" />
           <span class="ob-check"></span>
           <span class="ob-tool-emoji">🔧</span>
-          <div><div class="ob-tool-name">Jira</div><div class="ob-tool-hint">Issues assigned to you</div></div>
+          <div><div class="ob-tool-name">Jira</div><div class="ob-tool-hint">Tickets assigned to you</div></div>
         </label>
         <label class="ob-tool-label">
           <input type="checkbox" id="obToolGcal" />
           <span class="ob-check"></span>
           <span class="ob-tool-emoji">📅</span>
-          <div><div class="ob-tool-name">Google Calendar</div><div class="ob-tool-hint">Upcoming events and context</div></div>
+          <div><div class="ob-tool-name">Google Calendar</div><div class="ob-tool-hint">Your upcoming events</div></div>
         </label>
         <label class="ob-tool-label">
           <input type="checkbox" id="obToolGmail" />
           <span class="ob-check"></span>
           <span class="ob-tool-emoji">✉️</span>
-          <div><div class="ob-tool-name">Gmail</div><div class="ob-tool-hint">Sent mail, pending threads</div></div>
+          <div><div class="ob-tool-name">Gmail</div><div class="ob-tool-hint">Emails waiting for a reply</div></div>
         </label>
         <label class="ob-tool-label">
           <input type="checkbox" id="obToolGithub" />
           <span class="ob-check"></span>
           <span class="ob-tool-emoji">🐙</span>
-          <div><div class="ob-tool-name">GitHub</div><div class="ob-tool-hint">PRs and review requests</div></div>
+          <div><div class="ob-tool-name">GitHub</div><div class="ob-tool-hint">Pull requests and reviews</div></div>
         </label>
         <label class="ob-tool-label">
           <input type="checkbox" id="obToolLinear" />
           <span class="ob-check"></span>
           <span class="ob-tool-emoji">🔺</span>
-          <div><div class="ob-tool-name">Linear</div><div class="ob-tool-hint">Issues and team updates</div></div>
+          <div><div class="ob-tool-name">Linear</div><div class="ob-tool-hint">Tasks and team updates</div></div>
         </label>
       </div>
-      <button class="ob-btn-primary" id="obFinish">Start my Brief</button>
+      <button class="ob-btn-primary" id="obFinish">Start Brief</button>
       <button class="ob-btn-ghost" id="obBack3">Back</button>
     </div>
 
