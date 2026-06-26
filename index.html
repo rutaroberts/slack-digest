@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slack Digest</title>
+<title>Brief</title>
 <style>
 
 /* ─── Yahoo OS Dark tokens ────────────────────────────── */
@@ -198,16 +198,15 @@ body {
   align-self: flex-start;
 }
 
-/* active tab — contrast-high: light pill, dark text */
-.tab-btn.active {
+/* shared layout for all tab buttons */
+.tab-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 8px 12px;
   border-radius: var(--r-full);
-  border: 1px solid #e3e3e3;
-  background: #e3e3e3;
-  color: #141414;
+  border: 1px solid transparent;
+  background: none;
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -216,6 +215,24 @@ body {
   white-space: nowrap;
   cursor: pointer;
   flex-shrink: 0;
+  color: rgba(255,255,255,.55);
+}
+
+/* active tab — contrast-high: light pill, dark text */
+.tab-btn.active {
+  border-color: #e3e3e3;
+  background: #e3e3e3;
+  color: #141414;
+}
+
+/* Today as inactive anchor when another tab is active */
+.tabs-track.non-today-active > #tab-today {
+  border-color: rgba(255,255,255,.18);
+  color: rgba(255,255,255,.45);
+}
+.tabs-track.non-today-active > #tab-today:hover {
+  color: rgba(255,255,255,.8);
+  border-color: rgba(255,255,255,.3);
 }
 
 /* extras wrapper — expo ease-out: snappy start, smooth settle */
@@ -229,29 +246,20 @@ body {
 }
 .tabs-track:hover .tabs-extras { max-width: 400px; }
 
-/* inactive tabs — slide in from right with spring overshoot */
+/* inactive tabs in extras — ghost + spring entrance */
 .tabs-extras .tab-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: var(--r-full);
-  border: 1px solid transparent;
-  background: none;
   color: rgba(255,255,255,.75);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 15.4px;
-  letter-spacing: 0;
-  white-space: nowrap;
-  cursor: pointer;
-  flex-shrink: 0;
   opacity: 0;
   transform: translateX(14px) scale(0.88);
   transition:
     opacity 160ms ease,
     transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+/* active tab inside extras keeps white pill */
+.tabs-extras .tab-btn.active {
+  border-color: #e3e3e3;
+  background: #e3e3e3;
+  color: #141414;
 }
 /* staggered: Community first, Growth 75ms later */
 .tabs-extras .tab-btn:nth-child(1) { transition-delay: 30ms; }
@@ -1089,7 +1097,7 @@ body {
     <div class="header-top">
       <div class="header-identity">
         <div class="header-text">
-          <div class="header-title">Slack Digest</div>
+          <div class="header-title">Brief</div>
           <div class="header-sub" id="headerTs">Ruta Roberts · Tue, Jun 17</div>
         </div>
       </div>
@@ -1562,20 +1570,13 @@ function initData() {
 
 /* ── Tabs ───────────────────────────────────────────────── */
 function switchTab(name) {
-  const order  = ['today', 'community', 'growth'];
-  const track  = document.querySelector('.tabs-track');
-  const extras = document.querySelector('.tabs-extras');
-
+  const order = ['today', 'community', 'growth'];
   order.forEach(id => {
     document.getElementById('pane-' + id).classList.toggle('active', id === name);
     document.getElementById('tab-'  + id).classList.toggle('active', id === name);
   });
-
-  // keep active tab as a direct child of the track (outside the wrapper)
-  // so it's always visible in the collapsed rest state
-  track.insertBefore(document.getElementById('tab-' + name), extras);
-  order.filter(id => id !== name)
-       .forEach(id => extras.appendChild(document.getElementById('tab-' + id)));
+  // Today stays pinned; mark track so Today can style itself as inactive anchor
+  document.querySelector('.tabs-track').classList.toggle('non-today-active', name !== 'today');
 }
 
 /* ── Refresh — calls local server if running, else reloads ─ */

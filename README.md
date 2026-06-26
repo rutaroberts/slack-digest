@@ -1,13 +1,14 @@
-# Slack Digest
+# Brief
 
-A personal daily digest widget — surfacing unanswered DMs, saved messages, and team news from Slack. Runs as a local HTML file; optionally auto-refreshes via a background server powered by Claude Code.
+A personal daily digest widget — surfacing action items from Slack, Jira, Linear, GitHub, Gmail, Google Calendar, and more. Runs as a local HTML file; auto-refreshes via a background server powered by Claude Code.
 
 ## What it does
 
-- **Today tab** — action items: unanswered DMs, saved messages, Jira tickets waiting on you. Cards expand to show context and a link back to Slack. Mark items Done to dismiss them (persists across reloads).
+- **Today tab** — action items: unanswered DMs, assigned tickets, PRs waiting on you. Cards expand to show context and a deep link back to the source. Mark items Done to dismiss them (persists across reloads).
 - **Community tab** — team news: announcements, social moments, open questions in your channels.
 - **Growth tab** — static tips for working with AI tools.
-- **Refresh button** — if the server is running, triggers a live Claude Code session that checks Slack, Gmail, and Google Calendar, then rewrites `data.js`.
+- **Settings** — configure your name, email, and which integrations to scan (Slack, Jira, Linear, GitHub, Gmail, Google Calendar).
+- **Refresh button** — if the server is running, triggers a live Claude Code session that scans your enabled sources and rewrites `data.js`.
 
 ---
 

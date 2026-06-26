@@ -1,4 +1,4 @@
-// Slack Digest — example data file.
+// Brief — example data file.
 // Copy this to data.js and edit, OR let regenerate.sh generate data.js from live sources.
 // data.js is gitignored — this example is the committed reference.
 window.DIGEST_DATA = {
