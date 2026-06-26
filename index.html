@@ -225,16 +225,6 @@ body {
   color: #141414;
 }
 
-/* Today as inactive anchor when another tab is active */
-.tabs-track.non-today-active > #tab-today {
-  border-color: rgba(255,255,255,.18);
-  color: rgba(255,255,255,.45);
-}
-.tabs-track.non-today-active > #tab-today:hover {
-  color: rgba(255,255,255,.8);
-  border-color: rgba(255,255,255,.3);
-}
-
 /* extras wrapper — expo ease-out: snappy start, smooth settle */
 .tabs-extras {
   display: flex;
@@ -1080,6 +1070,62 @@ body {
 .settings-save-btn:hover { opacity:.88; }
 .settings-save-btn:active { transform:scale(.98); }
 
+/* ─── Onboarding ────────────────────────────────────────── */
+.onboarding-overlay {
+  position:fixed; inset:0; background:var(--bg-secondary); z-index:300;
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  opacity:0; pointer-events:none;
+  transition:opacity var(--dur-400) var(--ease-core);
+}
+.onboarding-overlay.active  { opacity:1; pointer-events:auto; }
+.onboarding-overlay.closing { opacity:0; pointer-events:none; transition-duration:var(--dur-250); }
+.onboarding-card {
+  width:100%; max-width:400px; background:var(--bg-primary); border-radius:24px;
+  padding:36px 32px 32px; min-height:420px;
+  box-shadow:var(--e4),0 0 0 1px rgba(248,248,248,.08);
+  display:flex; flex-direction:column;
+}
+.ob-dots { display:flex; gap:6px; margin-bottom:32px; }
+.ob-dot { height:6px; width:6px; border-radius:3px; background:rgba(248,248,248,.18); transition:width var(--dur-400) var(--ease-bounce),background var(--dur-250); }
+.ob-dot.active { width:20px; background:var(--fg-brand); }
+.ob-step { display:none; flex-direction:column; flex:1; animation:obSlideIn 320ms var(--ease-decel) both; }
+.ob-step.active  { display:flex; }
+.ob-step.ob-back { animation:obSlideBack 320ms var(--ease-decel) both; }
+@keyframes obSlideIn   { from{opacity:0;transform:translateX(28px)} to{opacity:1;transform:none} }
+@keyframes obSlideBack { from{opacity:0;transform:translateX(-28px)} to{opacity:1;transform:none} }
+.ob-badge { width:52px; height:52px; border-radius:16px; background:var(--bg-brand-sec); border:1px solid rgba(181,140,255,.2); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:8px; }
+.ob-title { font-size:26px; font-weight:800; color:var(--fg-primary); letter-spacing:-.025em; line-height:1.15; margin-bottom:8px; }
+.ob-desc  { font-size:14px; color:var(--fg-secondary); line-height:1.65; }
+.ob-spacer { flex:1; min-height:16px; }
+.ob-fields { display:flex; flex-direction:column; gap:12px; }
+.ob-btn-primary {
+  width:100%; padding:14px; border-radius:var(--r-lg);
+  background:var(--fg-brand); border:none; color:var(--fg-on-color);
+  font-family:inherit; font-size:15px; font-weight:700; letter-spacing:-.01em;
+  cursor:pointer; margin-top:8px;
+  transition:opacity var(--dur-150),transform var(--dur-100) var(--ease-core);
+}
+.ob-btn-primary:hover { opacity:.88; }
+.ob-btn-primary:active { transform:scale(.98); }
+.ob-btn-ghost {
+  width:100%; padding:10px; border-radius:var(--r-lg);
+  background:none; border:none; color:var(--fg-secondary);
+  font-family:inherit; font-size:14px; font-weight:500; cursor:pointer; margin-top:2px;
+  transition:color var(--dur-150);
+}
+.ob-btn-ghost:hover { color:var(--fg-primary); }
+.ob-tools { display:flex; flex-direction:column; gap:2px; margin-top:4px; }
+.ob-tool-label { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:var(--r-md); cursor:pointer; user-select:none; transition:background var(--dur-150); }
+.ob-tool-label:hover { background:rgba(248,248,248,.05); }
+.ob-tool-label input[type="checkbox"] { display:none; }
+.ob-check { width:20px; height:20px; flex-shrink:0; border-radius:6px; border:1.5px solid rgba(248,248,248,.2); display:flex; align-items:center; justify-content:center; transition:background var(--dur-150),border-color var(--dur-150); }
+.ob-tool-label:has(input:checked) .ob-check { background:var(--fg-positive-sec); border-color:var(--fg-positive-sec); }
+.ob-check::after { content:''; width:5px; height:9px; border-right:2px solid var(--fg-on-color); border-bottom:2px solid var(--fg-on-color); transform:rotate(45deg) translateY(-1px); opacity:0; transition:opacity var(--dur-150); }
+.ob-tool-label:has(input:checked) .ob-check::after { opacity:1; }
+.ob-tool-emoji { font-size:18px; }
+.ob-tool-name  { font-size:14px; font-weight:600; color:var(--fg-primary); }
+.ob-tool-hint  { font-size:12px; color:var(--fg-secondary); }
+
 </style>
 </head>
 <body>
@@ -1570,13 +1616,16 @@ function initData() {
 
 /* ── Tabs ───────────────────────────────────────────────── */
 function switchTab(name) {
-  const order = ['today', 'community', 'growth'];
+  const order  = ['today', 'community', 'growth'];
+  const track  = document.querySelector('.tabs-track');
+  const extras = document.querySelector('.tabs-extras');
   order.forEach(id => {
     document.getElementById('pane-' + id).classList.toggle('active', id === name);
     document.getElementById('tab-'  + id).classList.toggle('active', id === name);
   });
-  // Today stays pinned; mark track so Today can style itself as inactive anchor
-  document.querySelector('.tabs-track').classList.toggle('non-today-active', name !== 'today');
+  track.insertBefore(document.getElementById('tab-' + name), extras);
+  order.filter(id => id !== name)
+       .forEach(id => extras.appendChild(document.getElementById('tab-' + id)));
 }
 
 /* ── Refresh — calls local server if running, else reloads ─ */
@@ -2003,6 +2052,85 @@ function initSettings() {
   }
 }
 
+/* ── Onboarding ──────────────────────────────────────────── */
+let obDir = 'forward';
+
+function obGoTo(n) {
+  const cur = document.querySelector('.ob-step.active');
+  if (cur) {
+    cur.classList.remove('active', 'ob-back');
+    cur.style.display = 'none';
+  }
+  const next = document.getElementById('obStep' + n);
+  if (obDir === 'back') next.classList.add('ob-back'); else next.classList.remove('ob-back');
+  next.style.display = '';
+  next.classList.add('active');
+  document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('active', i < n));
+}
+
+function initOnboarding() {
+  const s = loadSettings();
+  if (s.identity?.name) return; // already set up
+
+  // Wire navigation
+  document.getElementById('obNext1').addEventListener('click', () => { obDir='forward'; obGoTo(2); setTimeout(() => document.getElementById('obName').focus(), 50); });
+  document.getElementById('obNext2').addEventListener('click', () => {
+    const name = document.getElementById('obName').value.trim();
+    if (!name) { document.getElementById('obName').focus(); document.getElementById('obName').style.borderColor='var(--fg-alert)'; return; }
+    document.getElementById('obName').style.borderColor='';
+    obDir='forward'; obGoTo(3);
+  });
+  document.getElementById('obBack2').addEventListener('click', () => { obDir='back'; obGoTo(1); });
+  document.getElementById('obBack3').addEventListener('click', () => { obDir='back'; obGoTo(2); });
+  document.getElementById('obFinish').addEventListener('click', obComplete);
+
+  // Enter key advances steps
+  ['obName','obEmail'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById(id === 'obName' ? 'obNext2' : 'obNext2').click();
+    });
+  });
+
+  document.getElementById('onboardingOverlay').classList.add('active');
+}
+
+async function obComplete() {
+  const name  = document.getElementById('obName').value.trim() || 'You';
+  const email = document.getElementById('obEmail').value.trim();
+  const settings = {
+    identity: { name, email },
+    tools: {
+      slack:  { enabled: document.getElementById('obToolSlack').checked  },
+      jira:   { enabled: document.getElementById('obToolJira').checked   },
+      gcal:   { enabled: document.getElementById('obToolGcal').checked   },
+      gmail:  { enabled: document.getElementById('obToolGmail').checked  },
+      github: { enabled: document.getElementById('obToolGithub').checked },
+      linear: { enabled: document.getElementById('obToolLinear').checked },
+    }
+  };
+
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  try {
+    await fetch('http://127.0.0.1:3141/settings', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(settings), signal:AbortSignal.timeout(3000)
+    });
+  } catch {}
+
+  // Update header name
+  const ts = document.getElementById('headerTs');
+  const parts = ts.textContent.split(' · ');
+  parts[0] = name;
+  ts.textContent = parts.join(' · ');
+
+  // Dismiss
+  const overlay = document.getElementById('onboardingOverlay');
+  overlay.classList.add('closing');
+  setTimeout(() => { overlay.classList.remove('active','closing'); }, 400);
+
+  showToast('Welcome to Brief, ' + name.split(' ')[0] + ' 👋');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initData();
   renderAddedItems();
@@ -2010,7 +2138,97 @@ document.addEventListener('DOMContentLoaded', () => {
   initResize();
   initAddModal();
   initSettings();
+  initOnboarding();
 });
 </script>
+
+<!-- ── Onboarding overlay ── -->
+<div class="onboarding-overlay" id="onboardingOverlay">
+  <div class="onboarding-card">
+
+    <div class="ob-dots">
+      <span class="ob-dot active" id="obDot1"></span>
+      <span class="ob-dot" id="obDot2"></span>
+      <span class="ob-dot" id="obDot3"></span>
+    </div>
+
+    <!-- Step 1: Welcome -->
+    <div class="ob-step active" id="obStep1">
+      <div class="ob-badge">✦</div>
+      <h1 class="ob-title">Meet Brief</h1>
+      <p class="ob-desc">Your AI-powered daily digest. Brief pulls action items from Slack, Jira, Linear, GitHub, and more — so nothing slips through the cracks.</p>
+      <div class="ob-spacer"></div>
+      <button class="ob-btn-primary" id="obNext1">Get started</button>
+    </div>
+
+    <!-- Step 2: Identity -->
+    <div class="ob-step" id="obStep2">
+      <h2 class="ob-title">Who are you?</h2>
+      <p class="ob-desc">Brief uses your name and email to find messages addressed to you across your tools.</p>
+      <div class="ob-spacer"></div>
+      <div class="ob-fields">
+        <div class="settings-field">
+          <label class="settings-field-label" for="obName">Your name <span style="color:var(--fg-alert)">*</span></label>
+          <input type="text" class="settings-input" id="obName" placeholder="Alex Kim" autocomplete="name" />
+        </div>
+        <div class="settings-field">
+          <label class="settings-field-label" for="obEmail">Work email</label>
+          <input type="email" class="settings-input" id="obEmail" placeholder="alex@yourcompany.com" autocomplete="email" />
+        </div>
+      </div>
+      <div class="ob-spacer"></div>
+      <button class="ob-btn-primary" id="obNext2">Continue</button>
+      <button class="ob-btn-ghost" id="obBack2">Back</button>
+    </div>
+
+    <!-- Step 3: Tools -->
+    <div class="ob-step" id="obStep3">
+      <h2 class="ob-title">What should Brief scan?</h2>
+      <p class="ob-desc">Pick your tools. You can always change this in Settings.</p>
+      <div class="ob-tools">
+        <label class="ob-tool-label">
+          <input type="checkbox" id="obToolSlack" checked />
+          <span class="ob-check"></span>
+          <span class="ob-tool-emoji">💬</span>
+          <div><div class="ob-tool-name">Slack</div><div class="ob-tool-hint">DMs, saved messages, channels</div></div>
+        </label>
+        <label class="ob-tool-label">
+          <input type="checkbox" id="obToolJira" />
+          <span class="ob-check"></span>
+          <span class="ob-tool-emoji">🔧</span>
+          <div><div class="ob-tool-name">Jira</div><div class="ob-tool-hint">Issues assigned to you</div></div>
+        </label>
+        <label class="ob-tool-label">
+          <input type="checkbox" id="obToolGcal" />
+          <span class="ob-check"></span>
+          <span class="ob-tool-emoji">📅</span>
+          <div><div class="ob-tool-name">Google Calendar</div><div class="ob-tool-hint">Upcoming events and context</div></div>
+        </label>
+        <label class="ob-tool-label">
+          <input type="checkbox" id="obToolGmail" />
+          <span class="ob-check"></span>
+          <span class="ob-tool-emoji">✉️</span>
+          <div><div class="ob-tool-name">Gmail</div><div class="ob-tool-hint">Sent mail, pending threads</div></div>
+        </label>
+        <label class="ob-tool-label">
+          <input type="checkbox" id="obToolGithub" />
+          <span class="ob-check"></span>
+          <span class="ob-tool-emoji">🐙</span>
+          <div><div class="ob-tool-name">GitHub</div><div class="ob-tool-hint">PRs and review requests</div></div>
+        </label>
+        <label class="ob-tool-label">
+          <input type="checkbox" id="obToolLinear" />
+          <span class="ob-check"></span>
+          <span class="ob-tool-emoji">🔺</span>
+          <div><div class="ob-tool-name">Linear</div><div class="ob-tool-hint">Issues and team updates</div></div>
+        </label>
+      </div>
+      <button class="ob-btn-primary" id="obFinish">Start my Brief</button>
+      <button class="ob-btn-ghost" id="obBack3">Back</button>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>
