@@ -47,7 +47,7 @@ window.DIGEST_DATA = {
           subject: "Sam hasn't confirmed the launch date",
           who: "Sam Rivera",
           meta: "DM · 8:30 AM",
-          context: "You asked. Nothing back yet.",
+          context: "You asked. The thread sits fallow.",
           waiting: true,
           noDone: true,
           resolveCheck: { type: "slack-reply", channel: "DABC345678", from: "Sam Rivera" }

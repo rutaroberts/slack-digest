@@ -1014,6 +1014,33 @@ body {
 .settings-feedback-btn:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22); }
 .settings-feedback-btn:active { transform: scale(.98); }
 
+.settings-update-banner {
+  display: none;
+  align-items: center; justify-content: space-between;
+  gap: 12px;
+  background: rgba(125,46,255,.18);
+  border: 1px solid rgba(181,140,255,.3);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.settings-update-banner.visible { display: flex; }
+.settings-update-text { font-size: 13px; font-weight: 500; color: var(--fg-brand-sec); line-height: 1.4; }
+.settings-update-btn {
+  flex-shrink: 0; padding: 7px 14px;
+  border-radius: var(--r-full); border: none;
+  background: var(--fg-brand); color: #fff;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  cursor: pointer;
+  transition: opacity var(--dur-150), transform var(--dur-100) var(--ease-core);
+}
+.settings-update-btn:hover { opacity: .85; }
+.settings-update-btn:active { transform: scale(.96); }
+.settings-version {
+  text-align: center; font-size: 11px;
+  color: var(--fg-tertiary); padding-top: 10px; letter-spacing: .3px;
+}
+
 /* ─── Onboarding ────────────────────────────────────────── */
 .onboarding-overlay {
   position:fixed; inset:0; background:var(--bg-secondary); z-index:300;
@@ -1177,7 +1204,7 @@ body {
 
         <div class="news-feature">
           <div class="news-headline">Context is the whole game</div>
-          <div class="news-feature-body">Tell Claude what you tried, what the rules are, and what done looks like. It reads everything. Most problems live in what you left out.</div>
+          <div class="news-feature-body">Tell Claude what you tried, what the rules are, and what done looks like. It reads everything. Most problems are latent in what you left out.</div>
         </div>
       </div>
 
@@ -1191,7 +1218,7 @@ body {
             <span class="news-num">01</span>
             <div class="news-item-content">
               <div class="news-item-title">A new session beats a long one that's lost</div>
-              <div class="news-item-body">Open a new session with just the error and what you tried. Long failed sessions accumulate confusion. They do not resolve it.</div>
+              <div class="news-item-body">Open a new session with just the error and what you tried. Long failed sessions accrue confusion. They do not resolve it.</div>
             </div>
           </div>
 
@@ -1207,7 +1234,7 @@ body {
             <span class="news-num">03</span>
             <div class="news-item-content">
               <div class="news-item-title">Authenticate MCPs before the session, not during</div>
-              <div class="news-item-body">Run /mcp first. A tool that fails mid-task breaks the thread. A tool that was never ready breaks your trust in the output.</div>
+              <div class="news-item-body">Run /mcp first. A tool that fails mid-task breaks the thread. A tool that was never ready corrodes your trust in the output.</div>
             </div>
           </div>
 
@@ -1231,7 +1258,7 @@ body {
             <span class="news-num">06</span>
             <div class="news-item-content">
               <div class="news-item-title">Ask for a signal when the task is long</div>
-              <div class="news-item-body">When starting anything slow, say "tell me when you're done." Claude will wait in silence and report back. Otherwise it disappears into the work.</div>
+              <div class="news-item-body">When starting anything slow, say "tell me when you're done." Claude will wait in silence and report back. Otherwise it recedes into the work.</div>
             </div>
           </div>
 
@@ -1451,7 +1478,12 @@ body {
     </div><!-- /settings-body -->
 
     <div class="settings-footer">
+      <div class="settings-update-banner" id="updateBanner">
+        <span class="settings-update-text" id="updateText">A new version is available</span>
+        <button class="settings-update-btn" id="updateBtn">Update</button>
+      </div>
       <button class="settings-save-btn" id="settingsSave">Save</button>
+      <div class="settings-version" id="settingsVersion">v1.0.0</div>
     </div>
   </div>
 </div><!-- /settings-overlay -->
@@ -1465,6 +1497,29 @@ body {
 /* ── Data rendering ─────────────────────────────────────── */
 function h(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Version / update check ─────────────────────────────── */
+const APP_VERSION = '1.0.0';
+// Swap this to your hosted manifest URL when you deploy updates
+const VERSION_CHECK_URL = 'version.json';
+
+async function checkForUpdates() {
+  try {
+    const res = await fetch(VERSION_CHECK_URL + '?_=' + Date.now());
+    if (!res.ok) return;
+    const { version, notes, url } = await res.json();
+    document.getElementById('settingsVersion').textContent = 'v' + APP_VERSION;
+    if (version && version !== APP_VERSION) {
+      const banner = document.getElementById('updateBanner');
+      document.getElementById('updateText').textContent =
+        'v' + version + ' available' + (notes ? ' — ' + notes : '');
+      document.getElementById('updateBtn').onclick = () => {
+        if (url) window.open(url, '_blank');
+      };
+      banner.classList.add('visible');
+    }
+  } catch {}
 }
 
 const EFFORT_CLASS = {
@@ -2068,6 +2123,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAddModal();
   initSettings();
   initOnboarding();
+  checkForUpdates();
 });
 </script>
 
