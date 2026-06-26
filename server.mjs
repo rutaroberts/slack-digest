@@ -38,6 +38,30 @@ const server = createServer((req, res) => {
     return;
   }
 
+  if (req.url === '/settings') {
+    if (req.method === 'GET') {
+      try {
+        const data = JSON.parse(readFileSync(join(DIR, 'settings.json'), 'utf8'));
+        return res.end(JSON.stringify(data));
+      } catch {
+        return res.end(JSON.stringify({}));
+      }
+    }
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk });
+      req.on('end', () => {
+        try {
+          const settings = JSON.parse(body || '{}');
+          writeFileSync(join(DIR, 'settings.json'), JSON.stringify(settings, null, 2));
+          console.log('[digest] Settings saved to settings.json');
+        } catch (err) { console.error('[digest] settings error:', err.message); }
+        res.end(JSON.stringify({ ok: true }));
+      });
+      return;
+    }
+  }
+
   if (req.method === 'GET' && req.url === '/refresh') {
     console.log('[digest] Refresh requested — running regenerate.sh')
     const proc = spawn('/bin/bash', [SCRIPT], { timeout: 300_000 })
