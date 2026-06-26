@@ -737,188 +737,113 @@ body {
 .widget.board-mode .pane-col-header { display: block; }
 
 /* ─── Add Item Modal ───────────────────────────────────── */
+/* ─── Add sheet — bottom sheet matching settings panel ──── */
 .add-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.65);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: rgba(0,0,0,.6);
   z-index: 200;
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--dur-250) var(--ease-core);
-  padding: var(--sp-md);
 }
-
-.add-modal-overlay.open {
-  opacity: 1;
-  pointer-events: all;
-}
+.add-modal-overlay.open { opacity: 1; pointer-events: auto; }
 
 .add-modal {
-  background: #1e1e1e;
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 20px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: var(--e4), 0 0 0 1px rgba(248,248,248,.05);
-  transform: scale(.94) translateY(12px);
-  transition:
-    transform var(--dur-250) var(--ease-decel),
-    opacity var(--dur-250) var(--ease-core);
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%) translateY(104%);
+  width: 100%; max-width: 560px;
+  background: var(--bg-primary);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(248,248,248,.06);
   overflow: hidden;
+  transition: transform var(--dur-400) var(--ease-decel);
 }
-
-.add-modal-overlay.open .add-modal {
-  transform: scale(1) translateY(0);
-}
+.add-modal-overlay.open .add-modal { transform: translateX(-50%) translateY(0); }
 
 .add-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 24px 16px;
-  border-bottom: 1px solid rgba(255,255,255,.07);
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--line-muted);
+  flex-shrink: 0;
 }
-
 .add-modal-title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
-  color: #fff;
-  letter-spacing: -.1px;
+  color: var(--fg-primary);
+  letter-spacing: -.01em;
 }
-
 .add-modal-close {
-  width: 28px;
-  height: 28px;
+  width: 30px; height: 30px;
   border-radius: var(--r-full);
-  background: rgba(255,255,255,.08);
-  border: none;
-  color: rgba(255,255,255,.5);
-  font-size: 14px;
+  background: var(--bg-e0);
+  border: none; color: var(--fg-secondary);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  font-family: inherit;
-  transition: background var(--dur-150) var(--ease-core);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-family: inherit;
+  transition: background var(--dur-150), color var(--dur-150);
 }
 .add-modal-close:hover { background: rgba(255,255,255,.14); color: #fff; }
 
-.add-mode-toggle {
-  display: flex;
-  gap: 6px;
-  padding: 16px 24px 8px;
-}
-
-.add-mode-btn {
-  flex: 1;
-  padding: 8px 0;
-  border-radius: var(--r-full);
-  border: 1px solid rgba(255,255,255,.1);
-  background: none;
-  color: rgba(255,255,255,.4);
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition:
-    background var(--dur-150) var(--ease-core),
-    color var(--dur-150) var(--ease-core),
-    border-color var(--dur-150) var(--ease-core);
-}
-
-.add-mode-btn.active {
-  background: rgba(125,46,255,.25);
-  border-color: rgba(181,140,255,.4);
-  color: #c9a8ff;
-  font-weight: 600;
-}
-
 .add-form {
-  padding: 8px 24px 24px;
+  padding: 20px 24px 32px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.add-field { display: flex; flex-direction: column; gap: 6px; }
-.add-field.hidden { display: none; }
-
-.add-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .7px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.3);
-}
-
 .add-input {
-  background: rgba(255,255,255,.06);
+  background: var(--bg-e0);
   border: 1px solid rgba(255,255,255,.1);
   border-radius: var(--r-md);
-  padding: 10px 14px;
-  color: #f5f5f5;
-  font-size: 14px;
+  padding: 14px 16px;
+  color: var(--fg-primary);
+  font-size: 16px;
   font-family: inherit;
-  line-height: 20px;
+  line-height: 22px;
   outline: none;
+  width: 100%;
   transition:
     border-color var(--dur-150) var(--ease-core),
     background var(--dur-150) var(--ease-core);
 }
 .add-input:focus {
   border-color: rgba(181,140,255,.5);
-  background: rgba(255,255,255,.09);
+  background: rgba(255,255,255,.08);
 }
-.add-input::placeholder { color: rgba(255,255,255,.2); }
-
-.add-textarea {
-  resize: vertical;
-  min-height: 72px;
-  max-height: 160px;
-}
+.add-input::placeholder { color: rgba(255,255,255,.22); }
 
 .add-tab-picker { display: flex; gap: 8px; }
-
 .add-tab-pick {
   flex: 1;
-  padding: 9px 0;
+  padding: 10px 0;
   border-radius: var(--r-md);
   border: 1px solid rgba(255,255,255,.1);
   background: none;
-  color: rgba(255,255,255,.4);
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
+  color: rgba(255,255,255,.45);
+  font-size: 14px; font-weight: 500; font-family: inherit;
   cursor: pointer;
   transition:
     background var(--dur-150) var(--ease-core),
     color var(--dur-150) var(--ease-core),
     border-color var(--dur-150) var(--ease-core);
 }
-
 .add-tab-pick.active {
   background: rgba(255,255,255,.1);
   border-color: rgba(255,255,255,.22);
-  color: #fff;
-  font-weight: 600;
+  color: #fff; font-weight: 600;
 }
 
 .add-submit-btn {
-  margin-top: 4px;
-  padding: 13px 0;
+  padding: 14px 0;
   border-radius: var(--r-full);
   border: none;
   background: var(--brand);
   color: #fff;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: inherit;
+  font-size: 15px; font-weight: 700; font-family: inherit;
   letter-spacing: -.1px;
   cursor: pointer;
   transition:
@@ -1099,7 +1024,7 @@ body {
 .ob-spacer { flex:1; min-height:16px; }
 .ob-fields { display:flex; flex-direction:column; gap:12px; }
 .ob-btn-primary {
-  width:100%; padding:14px; border-radius:var(--r-lg);
+  width:100%; padding:14px; border-radius:var(--r-full);
   background:var(--fg-brand); border:none; color:var(--fg-on-color);
   font-family:inherit; font-size:15px; font-weight:700; letter-spacing:-.01em;
   cursor:pointer; margin-top:8px;
@@ -1108,7 +1033,7 @@ body {
 .ob-btn-primary:hover { opacity:.88; }
 .ob-btn-primary:active { transform:scale(.98); }
 .ob-btn-ghost {
-  width:100%; padding:10px; border-radius:var(--r-lg);
+  width:100%; padding:10px; border-radius:var(--r-full);
   background:none; border:none; color:var(--fg-secondary);
   font-family:inherit; font-size:14px; font-weight:500; cursor:pointer; margin-top:2px;
   transition:color var(--dur-150);
@@ -1320,42 +1245,13 @@ body {
         <span class="add-modal-title">Add to digest</span>
         <button class="add-modal-close" id="addModalClose" aria-label="Close">✕</button>
       </div>
-
-      <div class="add-mode-toggle">
-        <button class="add-mode-btn active" id="modeManualBtn">Manual</button>
-        <button class="add-mode-btn" id="modeLinkBtn">From link</button>
-      </div>
-
       <form class="add-form" id="addItemForm">
-        <div class="add-field hidden" id="fieldLinkWrap">
-          <label class="add-label" for="inputLink">URL</label>
-          <input class="add-input" type="url" id="inputLink" placeholder="https://…">
+        <input class="add-input" type="url" id="inputLink" placeholder="Paste a link…" autocomplete="off" required>
+        <div class="add-tab-picker">
+          <button type="button" class="add-tab-pick active" id="pickToday">Today</button>
+          <button type="button" class="add-tab-pick" id="pickCommunity">Community</button>
         </div>
-
-        <div class="add-field" id="fieldHeaderWrap">
-          <label class="add-label" for="inputHeader">Header</label>
-          <input class="add-input" type="text" id="inputHeader" placeholder="What needs attention?" required>
-        </div>
-
-        <div class="add-field" id="fieldSubtextWrap">
-          <label class="add-label" for="inputSubtext">Subtext</label>
-          <input class="add-input" type="text" id="inputSubtext" placeholder="Channel · context">
-        </div>
-
-        <div class="add-field" id="fieldContextWrap">
-          <label class="add-label" for="inputContext">Action details</label>
-          <textarea class="add-input add-textarea" id="inputContext" placeholder="What do you need to do?"></textarea>
-        </div>
-
-        <div class="add-field">
-          <label class="add-label">Add to</label>
-          <div class="add-tab-picker">
-            <button type="button" class="add-tab-pick active" id="pickToday">Today</button>
-            <button type="button" class="add-tab-pick" id="pickCommunity">Community</button>
-          </div>
-        </div>
-
-        <button type="submit" class="add-submit-btn">Add to digest</button>
+        <button type="submit" class="add-submit-btn">Add</button>
       </form>
     </div>
   </div>
@@ -1766,20 +1662,11 @@ let addTab  = 'today';
 
 function openAddModal() {
   document.getElementById('addModalOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('inputHeader').focus(), 80);
+  setTimeout(() => document.getElementById('inputLink').focus(), 80);
 }
 
 function closeAddModal() {
   document.getElementById('addModalOverlay').classList.remove('open');
-}
-
-function setAddMode(mode) {
-  addMode = mode;
-  document.getElementById('modeManualBtn').classList.toggle('active', mode === 'manual');
-  document.getElementById('modeLinkBtn').classList.toggle('active', mode === 'link');
-  document.getElementById('fieldLinkWrap').classList.toggle('hidden', mode !== 'link');
-  document.getElementById('fieldContextWrap').classList.toggle('hidden', mode === 'link');
-  document.getElementById('inputLink').required = (mode === 'link');
 }
 
 function setAddTab(tab) {
@@ -1788,20 +1675,29 @@ function setAddTab(tab) {
   document.getElementById('pickCommunity').classList.toggle('active', tab === 'community');
 }
 
+function urlToTitle(url) {
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.replace(/\/$/, '').split('/').filter(Boolean);
+    const raw = parts.length ? parts[parts.length - 1].replace(/[-_]/g, ' ').replace(/\.[^.]+$/, '') : u.hostname;
+    return raw.charAt(0).toUpperCase() + raw.slice(1);
+  } catch { return url; }
+}
+
 function submitAddItem(e) {
   e.preventDefault();
-  const header  = document.getElementById('inputHeader').value.trim();
-  const subtext = document.getElementById('inputSubtext').value.trim();
-  const context = document.getElementById('inputContext').value.trim();
-  const link    = document.getElementById('inputLink').value.trim();
-  if (!header) { document.getElementById('inputHeader').focus(); return; }
+  const link = document.getElementById('inputLink').value.trim();
+  if (!link) { document.getElementById('inputLink').focus(); return; }
+
+  let subtext = '';
+  try { subtext = new URL(link).hostname; } catch {}
 
   const item = {
     id:      'added-' + Date.now(),
     tab:     addTab,
-    header,
+    header:  urlToTitle(link),
     subtext,
-    context,
+    context: '',
     href:    link,
   };
 
@@ -1809,7 +1705,6 @@ function submitAddItem(e) {
   items.unshift(item);
   localStorage.setItem(ADDED_KEY, JSON.stringify(items));
 
-  // Inject card live into the pane
   const content = document.getElementById('content-' + addTab);
   if (content) {
     let label = content.querySelector('.added-label');
@@ -1821,7 +1716,7 @@ function submitAddItem(e) {
     }
     const card = buildAddedCardEl(item);
     label.after(card);
-    if (item.context || item.href) wireCardExpand(card);
+    if (item.href) wireCardExpand(card);
   }
 
   document.getElementById('addItemForm').reset();
@@ -1835,8 +1730,6 @@ function initAddModal() {
   document.getElementById('addModalOverlay').addEventListener('click', e => {
     if (e.target === document.getElementById('addModalOverlay')) closeAddModal();
   });
-  document.getElementById('modeManualBtn').addEventListener('click', () => setAddMode('manual'));
-  document.getElementById('modeLinkBtn').addEventListener('click',   () => setAddMode('link'));
   document.getElementById('pickToday').addEventListener('click',     () => setAddTab('today'));
   document.getElementById('pickCommunity').addEventListener('click', () => setAddTab('community'));
   document.getElementById('addItemForm').addEventListener('submit',  submitAddItem);
